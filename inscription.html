@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Connexion & Inscription – Complexe Hôtelier Emmanuella</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <!-- Iconoir (optionnel) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css" />
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+  <style>
+    :root { --brand:#0d6efd; }
+    body {
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      min-height: 100vh;
+    }
+    .navbar { background: #111827; }
+
+    /* Cartes/modals sombres */
+    .card-dark, .login-card, .register-card {
+      background:#111827; border:1px solid rgba(255,255,255,.08); border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    }
+    .form-control, .form-select { background:#0d1323; color:#e5e7eb; border:1px solid rgba(255,255,255,.12); }
+    .form-control::placeholder { color:#6b7280; }
+    .form-control:focus, .form-select:focus { border-color: var(--brand); box-shadow: 0 0 0 .25rem rgba(13,110,253,.25); }
+    .input-group-text { background:#0d1323; color:#9ca3af; border:1px solid rgba(255,255,255,.12); }
+    .text-muted-2 { color:#9ca3af !important; }
+    .form-hint { font-size: .85rem; }
+
+    /* Boutons */
+    .btn-brand { background: var(--brand); border-color:var(--brand); }
+    .btn-brand:hover { filter: brightness(.95); }
+
+    /* Toasts */
+    .toast-container { z-index: 1080; }
+
+    /* Barre de force mot de passe */
+    .strength-label { font-size: .85rem; }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a href="index.html" class="navbar-brand d-flex align-items-center gap-2">
+        <img src="che-brand-02.png" alt="Logo Complexe Hôtelier Emmanuella" style="height:50px; width:auto;" loading="lazy" />
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Ouvrir le menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="#"><i class="bi bi-speedometer"></i> Dashboard</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-hdd-stack-fill"></i> Services
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+              <li><a class="dropdown-item" href="#"><i class="bi bi-house-fill"></i> Hébergement</a></li>
+              <li><a class="dropdown-item" href="#"><i class="bi bi-cup-straw"></i> Boissons et Eaux</a></li>
+              <li><a class="dropdown-item" href="#"><i class="bi bi-egg-fried"></i> Nourritures</a></li>
+              <li><a class="dropdown-item" href="#"><i class="bi bi-tsunami"></i> Piscine</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#"><i class="bi bi-gear-fill"></i> Configuration</a></li>
+            </ul>
+          </li>
+        </ul>
+        <div class="d-flex">
+          <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#loginModal">Connexion</button>
+          <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#registerModal">S’enregistrer</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="py-5">
+    <div class="container text-center text-white">
+      <h1 class="display-5 fw-bold mb-2">Bienvenue au Complexe Hôtelier Emmanuella</h1>
+      <p class="lead text-muted-2">Connectez-vous ou créez un compte pour accéder à votre espace de gestion</p>
+      <div class="d-flex gap-3 justify-content-center">
+        <button class="btn btn-lg btn-brand" data-bs-toggle="modal" data-bs-target="#loginModal">
+          <i class="bi bi-person-lock"></i> Se connecter
+        </button>
+        <button class="btn btn-lg btn-outline-light" data-bs-toggle="modal" data-bs-target="#registerModal">
+          <i class="bi bi-person-plus"></i> S’inscrire
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- LOGIN MODAL (existant) -->
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content login-card text-white">
+        <div class="modal-header border-0">
+          <h5 class="modal-title"><i class="bi bi-person-circle me-2"></i>Connexion</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <form id="loginForm" novalidate>
+            <div class="mb-3">
+              <label for="email" class="form-label">Adresse e‑mail</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-at"></i></span>
+                <input type="email" class="form-control" id="email" name="email" placeholder="ex: admin@emmanuella.ci" required>
+                <div class="invalid-feedback">Entrez une adresse e‑mail valide.</div>
+              </div>
+            </div>
+            <div class="mb-2">
+              <label for="password" class="form-label">Mot de passe</label>
+              <div class="input-group" id="passwordGroup">
+                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                <input type="password" class="form-control" id="password" name="password" minlength="6" required>
+                <button class="btn btn-outline-secondary" type="button" id="togglePwd" aria-label="Afficher/Masquer le mot de passe">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <div class="invalid-feedback">Au moins 6 caractères.</div>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mt-2">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="remember">
+                  <label class="form-check-label" for="remember">Se souvenir de moi</label>
+                </div>
+                <a href="#" class="link-light link-underline-opacity-25 link-underline-opacity-100-hover">Mot de passe oublié ?</a>
+              </div>
+            </div>
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-brand">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Se connecter
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer border-0 justify-content-between">
+          <span class="text-muted-2 form-hint">Astuce: utilisez un email fictif pour tester la validation côté client.</span>
+          <button class="btn btn-outline-light" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGISTER MODAL (NOUVEAU) -->
+  <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content register-card text-white">
+        <div class="modal-header border-0">
+          <h5 class="modal-title"><i class="bi bi-person-plus me-2"></i>Créer un compte</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <form id="registerForm" novalidate>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="regLast" class="form-label">Nom</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-person"></i></span>
+                  <input type="text" class="form-control" id="regLast" name="last_name" required>
+                  <div class="invalid-feedback">Nom requis.</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="regFirst" class="form-label">Prénom</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-person"></i></span>
+                  <input type="text" class="form-control" id="regFirst" name="first_name" required>
+                  <div class="invalid-feedback">Prénom requis.</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="regEmail" class="form-label">Adresse e‑mail</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-at"></i></span>
+                  <input type="email" class="form-control" id="regEmail" name="email" placeholder="ex: prenom.nom@emmanuella.ci" required>
+                  <div class="invalid-feedback">Email valide requis.</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="regPhone" class="form-label">Téléphone (optionnel)</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                  <input type="tel" class="form-control" id="regPhone" name="phone" placeholder="ex: 0102030405">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="regRole" class="form-label">Rôle</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
+                  <select id="regRole" name="role" class="form-select" required>
+                    <option value="" selected disabled>Choisir…</option>
+                    <option value="admin">Administrateur</option>
+                    <option value="manager">Manager</option>
+                    <option value="staff">Employé</option>
+                  </select>
+                  <div class="invalid-feedback">Choisissez un rôle.</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="regDept" class="form-label">Département</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-diagram-3"></i></span>
+                  <select id="regDept" name="department" class="form-select" required>
+                    <option value="" selected disabled>Choisir…</option>
+                    <option>Réception</option>
+                    <option>Restaurant/Bar</option>
+                    <option>Housekeeping</option>
+                    <option>Piscine/Loisirs</option>
+                    <option>Technique</option>
+                    <option>Comptabilité</option>
+                  </select>
+                  <div class="invalid-feedback">Choisissez un département.</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="regPwd" class="form-label">Mot de passe</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                  <input type="password" class="form-control" id="regPwd" name="password" minlength="8" required aria-describedby="pwdHelp">
+                  <button class="btn btn-outline-secondary" type="button" id="toggleRegPwd" aria-label="Afficher/Masquer le mot de passe"><i class="bi bi-eye"></i></button>
+                  <div class="invalid-feedback">Au moins 8 caractères.</div>
+                </div>
+                <div id="pwdHelp" class="form-text text-muted-2">Utilisez 8+ caractères avec majuscules, chiffres et symboles.</div>
+                <div class="progress mt-2" style="height: 6px;">
+                  <div id="pwdBar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+                </div>
+                <div class="strength-label mt-1" id="pwdLabel"></div>
+              </div>
+              <div class="col-md-6">
+                <label for="regPwd2" class="form-label">Confirmer le mot de passe</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                  <input type="password" class="form-control" id="regPwd2" name="password_confirm" minlength="8" required>
+                  <button class="btn btn-outline-secondary" type="button" id="toggleRegPwd2" aria-label="Afficher/Masquer le mot de passe"><i class="bi bi-eye"></i></button>
+                  <div class="invalid-feedback">Les mots de passe doivent correspondre.</div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="1" id="regTerms" required>
+                  <label class="form-check-label" for="regTerms">J’accepte les <a href="#" class="link-light">conditions générales</a> et la <a href="#" class="link-light">politique de confidentialité</a>.</label>
+                  <div class="invalid-feedback">Vous devez accepter les conditions.</div>
+                </div>
+              </div>
+            </div>
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-brand"><i class="bi bi-person-check me-1"></i> Créer mon compte</button>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer border-0 justify-content-between">
+          <span class="text-muted-2 form-hint">Déjà inscrit ? <a href="#" class="link-light" data-bs-target="#loginModal" data-bs-toggle="modal" data-bs-dismiss="modal">Se connecter</a></span>
+          <button class="btn btn-outline-light" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toasts -->
+  <div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="mainToast" class="toast align-items-center text-bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body" id="toastMsg">Bienvenue !</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fermer"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+  <script>
+    // ===== Helpers Bootstrap (toasts) =====
+    const toastEl = document.getElementById('mainToast');
+    const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+    const toastMsg = document.getElementById('toastMsg');
+
+    // ======= LOGIN =======
+    document.getElementById('togglePwd').addEventListener('click', () => {
+      const pwd = document.getElementById('password');
+      const icon = document.querySelector('#togglePwd i');
+      if (pwd.type === 'password') { pwd.type = 'text'; icon.classList.replace('bi-eye', 'bi-eye-slash'); }
+      else { pwd.type = 'password'; icon.classList.replace('bi-eye-slash', 'bi-eye'); }
+      pwd.focus();
+    });
+
+    const loginForm = document.getElementById('loginForm');
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!loginForm.checkValidity()) { e.stopPropagation(); loginForm.classList.add('was-validated'); toastMsg.textContent = 'Vérifiez les champs obligatoires.'; toast.show(); return; }
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const remember = document.getElementById('remember').checked;
+
+      try {
+        await new Promise(r => setTimeout(r, 500));
+        const isOk = email.endsWith('@emmanuella.ci') && password.length >= 6; // règle de test
+        if (!isOk) throw new Error('Identifiants incorrects');
+
+        toastMsg.textContent = 'Connexion réussie ! Bienvenue.'; toast.show();
+        const store = remember ? localStorage : sessionStorage;
+        store.setItem('che_auth', JSON.stringify({ email, at: Date.now() }));
+        const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('loginModal')); modal.hide();
+        // window.location.href = 'dashboard.html';
+      } catch (err) {
+        toastMsg.textContent = err.message || 'Erreur de connexion.'; toast.show();
+      }
+    });
+
+    // Protection demo Dashboard
+    document.querySelectorAll('a.nav-link, .btn-brand').forEach(el => {
+      el.addEventListener('click', (ev) => {
+        if (el.textContent.includes('Dashboard')) {
+          const logged = localStorage.getItem('che_auth') || sessionStorage.getItem('che_auth');
+          if (!logged) { ev.preventDefault(); bootstrap.Modal.getOrCreateInstance(document.getElementById('loginModal')).show(); }
+        }
+      });
+    });
+
+    // ======= REGISTER (Inscription) =======
+    const regPwd = document.getElementById('regPwd');
+    const regPwd2 = document.getElementById('regPwd2');
+    const pwdBar = document.getElementById('pwdBar');
+    const pwdLabel = document.getElementById('pwdLabel');
+
+    // Afficher/masquer
+    document.getElementById('toggleRegPwd').addEventListener('click', () => togglePwd(regPwd, '#toggleRegPwd i'));
+    document.getElementById('toggleRegPwd2').addEventListener('click', () => togglePwd(regPwd2, '#toggleRegPwd2 i'));
+    function togglePwd(input, iconSel){ const icon = document.querySelector(iconSel); if (input.type === 'password'){ input.type='text'; icon.classList.replace('bi-eye','bi-eye-slash'); } else { input.type='password'; icon.classList.replace('bi-eye-slash','bi-eye'); } input.focus(); }
+
+    // Force du mot de passe (simple scoring)
+    regPwd.addEventListener('input', () => {
+      const val = regPwd.value;
+      let score = 0;
+      if (val.length >= 8) score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+      const percent = [0,25,50,75,100][score];
+      pwdBar.style.width = percent + '%';
+      pwdBar.className = 'progress-bar';
+      if (percent < 50) { pwdBar.classList.add('bg-danger'); pwdLabel.textContent = 'Faible'; }
+      else if (percent < 75) { pwdBar.classList.add('bg-warning'); pwdLabel.textContent = 'Moyen'; }
+      else if (percent < 100) { pwdBar.classList.add('bg-info'); pwdLabel.textContent = 'Bon'; }
+      else { pwdBar.classList.add('bg-success'); pwdLabel.textContent = 'Excellent'; }
+    });
+
+    // Validation + simulation d'appel API
+    const registerForm = document.getElementById('registerForm');
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      // Bootstrap validity
+      if (!registerForm.checkValidity()) { e.stopPropagation(); registerForm.classList.add('was-validated'); toastMsg.textContent = 'Vérifiez les champs du formulaire.'; toast.show(); return; }
+      // Mots de passe égaux
+      if (regPwd.value !== regPwd2.value) {
+        regPwd2.setCustomValidity('Mismatch');
+        registerForm.classList.add('was-validated');
+        toastMsg.textContent = 'Les mots de passe ne correspondent pas.'; toast.show();
+        return;
+      } else { regPwd2.setCustomValidity(''); }
+
+      // Construire payload
+      const payload = {
+        last_name: document.getElementById('regLast').value.trim(),
+        first_name: document.getElementById('regFirst').value.trim(),
+        email: document.getElementById('regEmail').value.trim(),
+        phone: document.getElementById('regPhone').value.trim(),
+        role: document.getElementById('regRole').value,
+        department: document.getElementById('regDept').value,
+        password: regPwd.value,
+        terms: document.getElementById('regTerms').checked
+      };
+
+      try {
+        // TODO: remplacez par votre endpoint réel
+        // const res = await fetch('/register.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+        // const data = await res.json(); if(!res.ok) throw new Error(data?.message || 'Inscription refusée');
+        await new Promise(r => setTimeout(r, 700)); // simulation
+
+        // Démo de réussite si email de domaine emmanuella.ci
+        if (!payload.email.endsWith('@emmanuella.ci')) throw new Error("Utilisez un email d'entreprise (@emmanuella.ci) pour cette démo.");
+
+        toastMsg.textContent = 'Compte créé avec succès. Vous pouvez vous connecter.'; toast.show();
+        // Option: auto-login ou pré-remplir email dans le modal de connexion
+        document.getElementById('email').value = payload.email;
+        const regModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('registerModal')); regModal.hide();
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('loginModal')).show();
+      } catch (err) {
+        toastMsg.textContent = err.message || 'Erreur lors de l\'inscription.'; toast.show();
+      }
+    });
+  </script>
+</body>
+</html>
