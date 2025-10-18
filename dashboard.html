@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard – Complexe Hôtelier Emmanuella</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- Icônes & Bootstrap -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root{
+      --brand:#0d6efd;
+      --bg0:#090f1a; --bg1:#0d1323; --bg2:#0b1222;
+      --glowBlue:rgba(13,110,253,.08); --glowGold:rgba(255,193,7,.045);
+      --text:#e5e7eb; --muted:#9ca3af;
+    }
+    body{
+      min-height:100vh;
+      background:
+        radial-gradient(60% 80% at 70% 20%, var(--glowBlue), transparent 60%),
+        radial-gradient(80% 60% at 20% 80%, var(--glowGold), transparent 60%),
+        linear-gradient(135deg, var(--bg0) 0%, var(--bg1) 55%, var(--bg2) 100%);
+      background-blend-mode:screen,screen,normal;
+      color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+    }
+    .navbar{
+      background: linear-gradient(180deg,#000 0%,#111 50%,#000 100%);
+      box-shadow: 0 2px 10px rgba(0,0,0,.6);
+    }
+    .navbar-brand img{height:50px;width:auto;transition:transform .3s ease;}
+    .navbar-brand img:hover{ transform:scale(1.05); }
+    .navbar .nav-link{ font-weight:500; transition:color .2s ease; }
+    .navbar .nav-link:hover{ color:#ffc107 !important; }
+    .dropdown-menu{ background:#111;border:none;box-shadow:0 10px 30px rgba(0,0,0,.4); }
+    .dropdown-item{ color:#fff; }
+    .dropdown-item:hover{ background:#222; color:#ffc107; }
+
+    .card-dark{ background:#111827; border:1px solid rgba(255,255,255,.08); border-radius:18px; box-shadow:0 20px 60px rgba(0,0,0,.35); }
+    .text-muted-2{ color:var(--muted)!important; }
+    .form-control,.form-select{ background:#0d1323; color:var(--text); border:1px solid rgba(255,255,255,.12); }
+    .form-control::placeholder{ color:#6b7280; }
+    .form-control:focus,.form-select:focus{ border-color:var(--brand); box-shadow:0 0 0 .25rem rgba(13,110,253,.25); }
+    .btn-brand{ background:var(--brand); border-color:var(--brand); color:#fff; }
+    .btn-brand:hover{ filter:brightness(.95); }
+    .btn-outline-light:hover{ color:#000; background:#ffc107; border-color:#ffc107; }
+    .table-dark-custom{ --bs-table-bg:#0b1222; --bs-table-striped-bg:#0f1a31; --bs-table-color:#e5e7eb; }
+    .table-dark-custom th,.table-dark-custom td{ border-color:rgba(255,255,255,.08); }
+
+    .nav-pills .nav-link{
+      color:var(--text); background:#0d1323; border:1px solid rgba(255,255,255,.08);
+      border-radius:999px; margin:.25rem; display:flex; align-items:center; gap:.5rem;
+      transition:transform .15s ease, background .15s ease; white-space:nowrap;
+    }
+    .nav-pills .nav-link:hover{ transform:translateY(-1px); color:#ffc107; }
+    .nav-pills .nav-link.active{ background:#000; border-color:#000; }
+
+    .kpi .label{ color:var(--muted); font-size:.9rem; }
+    .kpi .value{ font-size:1.65rem; font-weight:700; }
+    .kpi .trend{ font-size:.85rem; }
+    .trend.up{ color:#22c55e; } .trend.down{ color:#ef4444; }
+    .badge-soft{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08); }
+
+    .skeleton{ position:relative; overflow:hidden; background:#0f162a; border-radius:12px; min-height:120px; }
+    .skeleton::after{
+      content:""; position:absolute; inset:0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.06) 50%, transparent 100%);
+      transform:translateX(-100%); animation:shimmer 1.4s infinite;
+    }
+    @keyframes shimmer{ 100%{ transform:translateX(100%);} }
+
+    .toast-container{ z-index:1080; }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+      <a href="index.html" class="navbar-brand d-flex align-items-center gap-2">
+        <img src="che-brand-02.png" alt="Logo Complexe Hôtelier Emmanuella" loading="lazy" />
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Ouvrir le menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active" href="dashboard.html"><i class="bi bi-speedometer"></i> Dashboard</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-hdd-stack-fill"></i> Services</a>
+            <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+              <li><a class="dropdown-item" href="hebergement.html"><i class="bi bi-house-fill"></i> Hébergement</a></li>
+              <li><a class="dropdown-item" href="boissons.html"><i class="bi bi-cup-straw"></i> Boissons & Eaux</a></li>
+              <li><a class="dropdown-item" href="nourriture.html"><i class="bi bi-egg-fried"></i> Nourritures</a></li>
+              <li><a class="dropdown-item" href="piscine.html"><i class="bi bi-tsunami"></i> Piscine</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="configuration.html"><i class="bi bi-gear-fill"></i> Configuration</a></li>
+            </ul>
+          </li>
+        </ul>
+        <div class="d-flex">
+          <a href="connexion.html" class="btn btn-primary me-2">Connexion</a>
+          <a href="inscription.html" class="btn btn-outline-light">S’enregistrer</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="container py-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+      <div>
+        <h1 class="h3 mb-1">Tableau de bord</h1>
+        <div class="text-muted-2 small">Vue consolidée – choisissez un module pour des détails ciblés</div>
+      </div>
+      <div class="d-flex gap-2 align-items-center">
+        <select class="form-select form-select-sm" id="selectDate" aria-label="Période">
+          <option value="today" selected>Aujourd’hui</option>
+          <option value="7d">7 derniers jours</option>
+          <option value="30d">30 derniers jours</option>
+          <option value="custom">Plage personnalisée…</option>
+        </select>
+        <button class="btn btn-outline-light btn-sm" id="btnRefresh" title="Actualiser"><i class="bi bi-arrow-repeat"></i></button>
+      </div>
+    </div>
+
+    <!-- Onglets (nav-pills) -->
+    <ul class="nav nav-pills mt-3" id="dashTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-tous" data-bs-toggle="tab" data-bs-target="#pane-tous" type="button" role="tab">
+          <i class="bi bi-grid"></i> Tous
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-heberg" data-bs-toggle="tab" data-bs-target="#pane-heberg" type="button" role="tab">
+          <i class="bi bi-house-fill"></i> Hébergement
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-boissons" data-bs-toggle="tab" data-bs-target="#pane-boissons" type="button" role="tab">
+          <i class="bi bi-cup-straw"></i> Boissons & Eaux
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-nourriture" data-bs-toggle="tab" data-bs-target="#pane-nourriture" type="button" role="tab">
+          <i class="bi bi-egg-fried"></i> Nourritures
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-piscine" data-bs-toggle="tab" data-bs-target="#pane-piscine" type="button" role="tab">
+          <i class="bi bi-tsunami"></i> Piscine
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-config" data-bs-toggle="tab" data-bs-target="#pane-config" type="button" role="tab">
+          <i class="bi bi-gear-fill"></i> Configuration
+        </button>
+      </li>
+    </ul>
+  </header>
+
+  <!-- MAIN -->
+  <main class="container pb-5">
+    <div class="tab-content" id="dashTabsContent">
+      <!-- ===== PANNEAU TOUS ===== -->
+      <div class="tab-pane fade" id="pane-tous" role="tabpanel" aria-labelledby="tab-tous">
+        <div id="all-skeleton" class="skeleton mb-3"></div>
+        <div class="content d-none">
+          <div class="row g-3 mb-3">
+            <div class="col-6 col-lg-3">
+              <div class="card card-dark p-3 h-100">
+                <div class="d-flex justify-content-between">
+                  <span class="label text-muted-2">Occupation</span>
+                  <span class="badge badge-soft"><i class="bi bi-houses"></i></span>
+                </div>
+                <div class="kpi mt-1">
+                  <div class="value" id="kpiOcc">--%</div>
+                  <div class="trend up" id="kpiOccTrend">+0.0% vs hier</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-lg-3">
+              <div class="card card-dark p-3 h-100">
+                <div class="d-flex justify-content-between">
+                  <span class="label text-muted-2">ADR (moy.)</span>
+                  <span class="badge badge-soft"><i class="bi bi-currency-dollar"></i></span>
+                </div>
+                <div class="kpi mt-1">
+                  <div class="value" id="kpiADR">-- FCFA</div>
+                  <div class="trend up" id="kpiADRTrend">+0.0% vs hier</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-lg-3">
+              <div class="card card-dark p-3 h-100">
+                <div class="d-flex justify-content-between">
+                  <span class="label text-muted-2">Ventes F&B</span>
+                  <span class="badge badge-soft"><i class="bi bi-receipt"></i></span>
+                </div>
+                <div class="kpi mt-1">
+                  <div class="value" id="kpiFB">-- FCFA</div>
+                  <div class="trend up" id="kpiFBTrend">+0.0% vs hier</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-lg-3">
+              <div class="card card-dark p-3 h-100">
+                <div class="d-flex justify-content-between">
+                  <span class="label text-muted-2">Entrées Piscine</span>
+                  <span class="badge badge-soft"><i class="bi bi-people"></i></span>
+                </div>
+                <div class="kpi mt-1">
+                  <div class="value" id="kpiPool">--</div>
+                  <div class="trend up" id="kpiPoolTrend">+0.0% vs hier</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-12 col-xl-6">
+              <div class="card card-dark p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="mb-0">Taux d’occupation (7 jours)</h6>
+                  <span class="badge badge-soft">Hébergement</span>
+                </div>
+                <div style="height:260px"><canvas id="chartOcc"></canvas></div>
+              </div>
+            </div>
+            <div class="col-12 col-xl-6">
+              <div class="card card-dark p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="mb-0">Revenus par module</h6>
+                  <span class="badge badge-soft">Comparatif</span>
+                </div>
+                <div style="height:260px"><canvas id="chartRev"></canvas></div>
+              </div>
+            </div>
+          </div>
+
+          <section class="mt-4">
+            <div class="card card-dark p-3">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <h6 class="mb-0">Actions rapides</h6>
+                <div class="d-flex flex-wrap gap-2">
+                  <a href="hebergement.html" class="btn btn-brand btn-sm"><i class="bi bi-calendar-plus"></i> Nouvelle réservation</a>
+                  <a href="boissons.html" class="btn btn-outline-light btn-sm"><i class="bi bi-receipt"></i> Saisie vente bar</a>
+                  <a href="nourriture.html" class="btn btn-outline-light btn-sm"><i class="bi bi-egg-fried"></i> Commande cuisine</a>
+                  <a href="piscine.html" class="btn btn-outline-light btn-sm"><i class="bi bi-person-plus"></i> Entrée piscine</a>
+                  <a href="configuration.html" class="btn btn-outline-light btn-sm"><i class="bi bi-gear"></i> Paramètres</a>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- ===== PANNEAU HÉBERGEMENT ===== -->
+      <div class="tab-pane fade" id="pane-heberg" role="tabpanel" aria-labelledby="tab-heberg">
+        <div id="heberg-skeleton" class="skeleton mb-3"></div>
+        <div class="content d-none">
+          <div class="row g-3 mb-3">
+            <div class="col-6 col-lg-3"><div class="card card-dark p-3"><div class="d-flex justify-content-between"><span class="text-muted-2">Occupation</span><span class="badge badge-soft"><i class="bi bi-houses"></i></span></div><div class="kpi mt-1"><div class="value" id="h-occ">--%</div><div class="trend up" id="h-occ-trend">+0.0%</div></div></div></div>
+            <div class="col-6 col-lg-3"><div class="card card-dark p-3"><div class="d-flex justify-content-between"><span class="text-muted-2">ADR (moy.)</span><span class="badge badge-soft"><i class="bi bi-currency-dollar"></i></span></div><div class="kpi mt-1"><div class="value" id="h-adr">-- FCFA</div><div class="trend up" id="h-adr-trend">+0.0%</div></div></div></div>
+            <div class="col-12 col-xl-6"><div class="card card-dark p-3 h-100"><div class="d-flex justify-content-between align-items-center mb-2"><h6 class="mb-0">Ménage – Répartition</h6><span class="badge badge-soft">Housekeeping</span></div><div style="height:220px"><canvas id="chartHK"></canvas></div></div></div>
+          </div>
+
+          <div class="card card-dark p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0">Arrivées & Départs – Aujourd’hui</h6>
+              <div class="d-flex gap-2">
+                <span class="badge badge-soft"><i class="bi bi-box-arrow-in-right"></i> Arrivées</span>
+                <span class="badge badge-soft"><i class="bi bi-box-arrow-right"></i> Départs</span>
+              </div>
+            </div>
+            <div class="row g-3">
+              <div class="col-12 col-lg-6"><div class="table-responsive"><table class="table table-dark table-striped table-dark-custom align-middle mb-0"><thead><tr><th>Code</th><th>Client</th><th>Ch.</th><th>Heure</th></tr></thead><tbody id="h-arrivals"></tbody></table></div></div>
+              <div class="col-12 col-lg-6"><div class="table-responsive"><table class="table table-dark table-striped table-dark-custom align-middle mb-0"><thead><tr><th>Code</th><th>Client</th><th>Ch.</th><th>Heure</th></tr></thead><tbody id="h-departures"></tbody></table></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PANNEAU BOISSONS ===== -->
+      <div class="tab-pane fade" id="pane-boissons" role="tabpanel" aria-labelledby="tab-boissons">
+        <div id="boissons-skeleton" class="skeleton mb-3"></div>
+        <div class="content d-none">
+          <div class="row g-3">
+            <div class="col-12 col-xl-6">
+              <div class="card card-dark p-3 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="mb-0">Ventes (aujourd’hui)</h6>
+                  <span class="badge badge-soft"><i class="bi bi-receipt"></i></span>
+                </div>
+                <div class="kpi">
+                  <div class="value" id="b-sales">-- FCFA</div>
+                  <div class="trend up" id="b-trend">+0.0% vs hier</div>
+                </div>
+                <hr class="text-white-50">
+                <div style="height:220px"><canvas id="chartDrinks"></canvas></div>
+              </div>
+            </div>
+            <div class="col-12 col-xl-6">
+              <div class="card card-dark p-3 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="mb-0">Top 5 – Boissons</h6>
+                  <span class="badge badge-soft">Bar</span>
+                </div>
+                <ul class="list-group list-group-flush" id="b-top-list">
+                  <li class="list-group-item bg-transparent text-white-50 border-secondary">Chargement…</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PANNEAU NOURRITURES ===== -->
+      <div class="tab-pane fade" id="pane-nourriture" role="tabpanel" aria-labelledby="tab-nourriture">
+        <div id="nourriture-skeleton" class="skeleton mb-3"></div>
+        <div class="content d-none">
+          <div class="card card-dark p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0">Commandes cuisine – aujourd’hui</h6>
+              <span class="badge badge-soft"><i class="bi bi-egg-fried"></i></span>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-dark table-striped table-dark-custom align-middle mb-0">
+                <thead><tr><th>Heure</th><th>Plat</th><th>Qté</th><th>Serveur</th><th>Statut</th></tr></thead>
+                <tbody id="n-orders"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PANNEAU PISCINE ===== -->
+      <div class="tab-pane fade" id="pane-piscine" role="tabpanel" aria-labelledby="tab-piscine">
+        <div id="piscine-skeleton" class="skeleton mb-3"></div>
+        <div class="content d-none">
+          <div class="row g-3">
+            <div class="col-12 col-xl-4">
+              <div class="card card-dark p-3 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="mb-0">Entrées (aujourd’hui)</h6>
+                  <span class="badge badge-soft"><i class="bi bi-people"></i></span>
+                </div>
+                <div class="kpi">
+                  <div class="value" id="p-entries">--</div>
+                  <div class="trend up" id="p-trend">+0.0% vs hier</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-xl-8">
+              <div class="card card-dark p-3 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="mb-0">Tickets maintenance (zone piscine)</h6>
+                  <button class="btn btn-outline-light btn-sm" id="btnNewTicket"><i class="bi bi-tools"></i> Nouveau</button>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-dark table-striped table-dark-custom align-middle mb-0">
+                    <thead><tr><th>Zone</th><th>Problème</th><th>Statut</th><th>Créé</th></tr></thead>
+                    <tbody id="p-tickets"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>          
+        </div>
+      </div>
+
+      <!-- ===== PANNEAU CONFIGURATION ===== -->
+      <div class="tab-pane fade" id="pane-config" role="tabpanel" aria-labelledby="tab-config">
+        <div id="config-skeleton" class="skeleton mb-3"></div>
+        <div class="content d-none">
+          <div class="card card-dark p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="mb-0">Paramètres rapides</h6>
+              <span class="badge badge-soft"><i class="bi bi-gear"></i></span>
+            </div>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label">Devise</label>
+                <select class="form-select" id="cfg-currency"><option>FCFA</option><option>EUR</option><option>USD</option></select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Fuseau horaire</label>
+                <select class="form-select" id="cfg-tz"><option>Africa/Abidjan</option><option>Europe/Paris</option><option>UTC</option></select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Langue</label>
+                <select class="form-select" id="cfg-lang"><option>Français</option><option>English</option></select>
+              </div>
+              <div class="col-12 d-flex gap-2">
+                <button class="btn btn-brand" id="cfg-save"><i class="bi bi-check2"></i> Enregistrer</button>
+                <button class="btn btn-outline-light" id="cfg-reset"><i class="bi bi-arrow-counterclockwise"></i> Réinitialiser</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- /tab-content -->
+  </main>
+
+  <!-- Toasts -->
+  <div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="mainToast" class="toast align-items-center text-bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body" id="toastMsg">Dashboard prêt</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+  <script>
+    // ========= Toast helper =========
+    const toast = new bootstrap.Toast(document.getElementById('mainToast'), { delay: 2200 });
+    function showToast(msg){ document.getElementById('toastMsg').textContent = msg; toast.show(); }
+
+    // ========= Démo Data =========
+    const demo = {
+      heberg: {
+        occ7d: [62,68,71,69,73,78,81],
+        labels7d: ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],
+        adr: 48000, occ: 78, occTrend: +2.1, adrTrend: +1.3,
+        hk: { clean: 24, inspected: 6, dirty: 8 },
+        arrivalsToday: [
+          { code:'CHE-2025-0096', guest:'K. Kouadio', room:'204', time:'14:00' },
+          { code:'CHE-2025-0097', guest:'A. Traoré',  room:'105', time:'16:30' },
+        ],
+        departuresToday: [
+          { code:'CHE-2025-0089', guest:'S. N’Guessan', room:'102', time:'11:00' },
+          { code:'CHE-2025-0090', guest:'M. Diallo',    room:'205', time:'10:30' },
+        ]
+      },
+      fnb: {
+        salesToday: 385000, trend: +4.5,
+        drinksTop: [
+          { label:'Eau minérale', qty:120 },
+          { label:'Soda', qty:95 },
+          { label:'Bière', qty:80 },
+          { label:'Jus ananas', qty:65 },
+          { label:'Cocktail maison', qty:42 }
+        ]
+      },
+      pool: {
+        entries: 64, trend: +6.2,
+        tickets: [
+          { zone:'Piscine', title:'Pompe faible pression', status:'open', createdAt:'2025-09-20' },
+          { zone:'Vestiaires', title:'Serrure cassée', status:'in_progress', createdAt:'2025-09-19' }
+        ]
+      },
+      revenueModules: {
+        labels:['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],
+        hebergement:[620,640,660,650,720,840,910],
+        boissons:[120,130,110,115,150,180,190],
+        nourriture:[210,220,230,240,260,300,320],
+        piscine:[50,60,55,70,80,90,95]
+      },
+      cuisineToday: [
+        { time:'12:15', dish:'Poulet braisé', qty:2, waiter:'Awa', status:'servi' },
+        { time:'12:30', dish:'Poisson grillé', qty:1, waiter:'Yao', status:'en cours' },
+        { time:'13:05', dish:'Alloco + œufs', qty:3, waiter:'Mariam', status:'préparé' }
+      ]
+    };
+
+    // ========= Store simple =========
+    const Store = {
+      set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch{} },
+      get(k, def){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; }catch{ return def; } }
+    };
+
+    // ========= Charts (créés à la demande) =========
+    let chartOcc, chartRev, chartHK, chartDrinks;
+    function makeOcc(){
+      if(chartOcc) return;
+      chartOcc = new Chart(document.getElementById('chartOcc'), {
+        type:'line',
+        data:{ labels: demo.heberg.labels7d, datasets:[{ label:'Occupation (%)', data: demo.heberg.occ7d, tension:.35, fill:false }] },
+        options:{ responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{ labels:{ color:'#e5e7eb' } } },
+          scales:{ x:{ ticks:{ color:'#9ca3af' }, grid:{ color:'rgba(255,255,255,.06)'} },
+                   y:{ ticks:{ color:'#9ca3af' }, grid:{ color:'rgba(255,255,255,.06)' }, suggestedMin:0, suggestedMax:100 } }
+        }
+      });
+    }
+    function makeRev(){
+      if(chartRev) return;
+      chartRev = new Chart(document.getElementById('chartRev'), {
+        type:'bar',
+        data:{ labels: demo.revenueModules.labels,
+          datasets:[
+            { label:'Hébergement', data: demo.revenueModules.hebergement, stack:'rev' },
+            { label:'Boissons', data: demo.revenueModules.boissons, stack:'rev' },
+            { label:'Nourritures', data: demo.revenueModules.nourriture, stack:'rev' },
+            { label:'Piscine', data: demo.revenueModules.piscine, stack:'rev' },
+          ]},
+        options:{ responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{ labels:{ color:'#e5e7eb' } } },
+          scales:{ x:{ stacked:true, ticks:{ color:'#9ca3af' }, grid:{ color:'rgba(255,255,255,.06)'} },
+                   y:{ stacked:true, ticks:{ color:'#9ca3af' }, grid:{ color:'rgba(255,255,255,.06)'} } }
+        }
+      });
+    }
+    function makeHK(){
+      if(chartHK) return;
+      chartHK = new Chart(document.getElementById('chartHK'), {
+        type:'doughnut',
+        data:{ labels:['Propre','Inspectée','Sale'], datasets:[{ data:[demo.heberg.hk.clean, demo.heberg.hk.inspected, demo.heberg.hk.dirty] }] },
+        options:{ plugins:{ legend:{ labels:{ color:'#e5e7eb' } } } }
+      });
+    }
+    function makeDrinks(){
+      if(chartDrinks) return;
+      chartDrinks = new Chart(document.getElementById('chartDrinks'), {
+        type:'bar',
+        data:{ labels: demo.fnb.drinksTop.map(d=>d.label), datasets:[{ label:'Quantités', data: demo.fnb.drinksTop.map(d=>d.qty) }] },
+        options:{
+          plugins:{ legend:{ display:false } },
+          scales:{ x:{ ticks:{ color:'#9ca3af' }, grid:{ color:'rgba(255,255,255,.06)'} },
+                   y:{ ticks:{ color:'#9ca3af' }, grid:{ color:'rgba(255,255,255,.06)'} } }
+        }
+      });
+    } /* <-- la fonction est maintenant correctement fermée */
+
+    // ========= Remplissage UI =========
+    function fillAllKPIs(){
+      document.getElementById('kpiOcc').textContent = demo.heberg.occ + '%';
+      document.getElementById('kpiOccTrend').textContent = (demo.heberg.occTrend>0?'+':'') + demo.heberg.occTrend + '% vs hier';
+      document.getElementById('kpiOccTrend').className = 'trend ' + (demo.heberg.occTrend>=0 ? 'up':'down');
+      document.getElementById('kpiADR').textContent = new Intl.NumberFormat('fr-FR').format(demo.heberg.adr) + ' FCFA';
+      document.getElementById('kpiADRTrend').textContent = (demo.heberg.adrTrend>0?'+':'') + demo.heberg.adrTrend + '% vs hier';
+      document.getElementById('kpiADRTrend').className = 'trend ' + (demo.heberg.adrTrend>=0 ? 'up':'down');
+      document.getElementById('kpiFB').textContent = new Intl.NumberFormat('fr-FR').format(demo.fnb.salesToday) + ' FCFA';
+      document.getElementById('kpiFBTrend').textContent = (demo.fnb.trend>0?'+':'') + demo.fnb.trend + '% vs hier';
+      document.getElementById('kpiFBTrend').className = 'trend ' + (demo.fnb.trend>=0 ? 'up':'down');
+      document.getElementById('kpiPool').textContent = demo.pool.entries;
+      document.getElementById('kpiPoolTrend').textContent = (demo.pool.trend>0?'+':'') + demo.pool.trend + '% vs hier';
+      document.getElementById('kpiPoolTrend').className = 'trend ' + (demo.pool.trend>=0 ? 'up':'down');
+    }
+    function fillHeberg(){
+      document.getElementById('h-occ').textContent = demo.heberg.occ + '%';
+      document.getElementById('h-occ-trend').textContent = (demo.heberg.occTrend>0?'+':'') + demo.heberg.occTrend + '%';
+      document.getElementById('h-occ-trend').className = 'trend ' + (demo.heberg.occTrend>=0?'up':'down');
+      document.getElementById('h-adr').textContent = new Intl.NumberFormat('fr-FR').format(demo.heberg.adr) + ' FCFA';
+      document.getElementById('h-adr-trend').textContent = (demo.heberg.adrTrend>0?'+':'') + demo.heberg.adrTrend + '%';
+      document.getElementById('h-adr-trend').className = 'trend ' + (demo.heberg.adrTrend>=0?'up':'down');
+      const arr = document.getElementById('h-arrivals');
+      arr.innerHTML = demo.heberg.arrivalsToday.map(a => `
+        <tr><td><strong>${a.code}</strong></td><td>${a.guest}</td><td>${a.room}</td><td>${a.time}</td></tr>
+      `).join('');
+      const dep = document.getElementById('h-departures');
+      dep.innerHTML = demo.heberg.departuresToday.map(a => `
+        <tr><td><strong>${a.code}</strong></td><td>${a.guest}</td><td>${a.room}</td><td>${a.time}</td></tr>
+      `).join('');
+    }
+    function fillBoissons(){
+      document.getElementById('b-sales').textContent = new Intl.NumberFormat('fr-FR').format(demo.fnb.salesToday) + ' FCFA';
+      document.getElementById('b-trend').textContent = (demo.fnb.trend>0?'+':'') + demo.fnb.trend + '% vs hier';
+      document.getElementById('b-trend').className = 'trend ' + (demo.fnb.trend>=0?'up':'down');
+      document.getElementById('b-top-list').innerHTML = demo.fnb.drinksTop.map(d=>`
+        <li class="list-group-item bg-transparent text-white d-flex justify-content-between align-items-center">
+          <span>${d.label}</span><span class="badge bg-secondary">${d.qty}</span>
+        </li>`).join('');
+    }
+    function fillNourriture(){
+      document.getElementById('n-orders').innerHTML = demo.cuisineToday.map(o=>`
+        <tr>
+          <td>${o.time}</td><td>${o.dish}</td><td>${o.qty}</td><td>${o.waiter}</td>
+          <td><span class="badge ${o.status==='servi'?'bg-success':(o.status==='en cours'?'bg-warning text-dark':'bg-info')}">${o.status}</span></td>
+        </tr>
+      `).join('');
+    }
+    function fillPiscine(){
+      document.getElementById('p-entries').textContent = demo.pool.entries;
+      document.getElementById('p-trend').textContent = (demo.pool.trend>0?'+':'') + demo.pool.trend + '% vs hier';
+      document.getElementById('p-trend').className = 'trend ' + (demo.pool.trend>=0?'up':'down');
+      document.getElementById('p-tickets').innerHTML = demo.pool.tickets.map(t=>`
+        <tr>
+          <td>${t.zone}</td><td>${t.title}</td>
+          <td><span class="badge ${t.status==='open'?'bg-danger':(t.status==='in_progress'?'bg-warning text-dark':'bg-success')}">${t.status.replace('_',' ')}</span></td>
+          <td>${t.createdAt}</td>
+        </tr>
+      `).join('');
+    }
+
+    // ========= Simu chargement (fetch) =========
+    function loadPane(paneId, loaderFnArray = [], afterCharts = []) {
+      const wrap = document.querySelector(`${paneId} .content`);
+      const skel = document.querySelector(`${paneId} .skeleton`);
+      if(!wrap || !skel) return;
+      if(!wrap.classList.contains('d-none')) return; // déjà chargé
+
+      setTimeout(()=>{
+        loaderFnArray.forEach(fn => fn());
+        afterCharts.forEach(fn => fn());
+        skel.classList.add('d-none');
+        wrap.classList.remove('d-none');
+      }, 450);
+    }
+
+    // ========= Tabs: hash-routing + mémorisation =========
+    function showTabById(id){
+      const btn = document.querySelector(`button[data-bs-target="${id}"]`);
+      if(btn){ new bootstrap.Tab(btn).show(); }
+    }
+
+    document.querySelectorAll('#dashTabs .nav-link').forEach(btn=>{
+      btn.addEventListener('shown.bs.tab', (e)=>{
+        const target = e.target.getAttribute('data-bs-target'); // #pane-xxx
+        history.replaceState(null, '', target);
+        Store.set('dash.activeTab', target);
+
+        switch(target){
+          case '#pane-tous':
+            loadPane('#pane-tous', [fillAllKPIs], [makeOcc, makeRev]);
+            showToast('Vue Tous');
+            break;
+          case '#pane-heberg':
+            loadPane('#pane-heberg', [fillHeberg], [makeHK]);
+            showToast('Vue Hébergement');
+            break;
+          case '#pane-boissons':
+            loadPane('#pane-boissons', [fillBoissons], [makeDrinks]);
+            showToast('Vue Boissons & Eaux');
+            break;
+          case '#pane-nourriture':
+            loadPane('#pane-nourriture', [fillNourriture], []);
+            showToast('Vue Nourritures');
+            break;
+          case '#pane-piscine':
+            loadPane('#pane-piscine', [fillPiscine], []);
+            showToast('Vue Piscine');
+            break;
+          case '#pane-config':
+            loadPane('#pane-config', [], []);
+            showToast('Vue Configuration');
+            break;
+        }
+      });
+    });
+
+    // ========= Actions =========
+    document.getElementById('btnRefresh').addEventListener('click', ()=>{
+      // à brancher: re-fetch selon selectDate.value
+      showToast('Données actualisées');
+    });
+
+    document.getElementById('cfg-save')?.addEventListener('click', ()=>{
+      const cfg = {
+        currency: document.getElementById('cfg-currency').value,
+        tz: document.getElementById('cfg-tz').value,
+        lang: document.getElementById('cfg-lang').value
+      };
+      Store.set('dash.cfg', cfg);
+      showToast('Paramètres enregistrés');
+    });
+    document.getElementById('cfg-reset')?.addEventListener('click', ()=>{
+      ['cfg-currency','cfg-tz','cfg-lang'].forEach(id=>{
+        const el = document.getElementById(id);
+        if(el) el.selectedIndex = 0;
+      });
+      showToast('Paramètres réinitialisés');
+    });
+
+    // ========= INIT =========
+    document.addEventListener('DOMContentLoaded', ()=>{
+      const saved = Store.get('dash.activeTab', null);
+      const fromHash = location.hash && document.querySelector(`button[data-bs-target="${location.hash}"]`) ? location.hash : null;
+      const target = fromHash || saved || '#pane-tous';
+      showTabById(target);
+
+      const firstPane = document.querySelector(`${target} .content`);
+      if(firstPane && firstPane.classList.contains('d-none')){
+        switch(target){
+          case '#pane-tous':   loadPane('#pane-tous', [fillAllKPIs], [makeOcc, makeRev]); break;
+          case '#pane-heberg': loadPane('#pane-heberg', [fillHeberg], [makeHK]); break;
+          case '#pane-boissons': loadPane('#pane-boissons', [fillBoissons], [makeDrinks]); break;
+          case '#pane-nourriture': loadPane('#pane-nourriture', [fillNourriture], []); break;
+          case '#pane-piscine': loadPane('#pane-piscine', [fillPiscine], []); break;
+          case '#pane-config': loadPane('#pane-config', [], []); break;
+        }
+      }
+      showToast('Dashboard prêt');
+    });
+  </script>
+</body>
+</html>

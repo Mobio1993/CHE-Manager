@@ -4,122 +4,273 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Hébergement – Complexe Hôtelier Emmanuella</title>
+
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png">
-  <!-- Bootstrap Icons -->
+
+  <!-- Icônes -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+
+  <!-- Styles globaux (navbar noire brillante + UI sombre luxe + fond harmonisé) -->
   <style>
-    :root { --brand:#0d6efd; }
-    body{ background: linear-gradient(135deg, #1e3c72, #2a5298); min-height:100vh; color:#e5e7eb; }
-    .navbar{ background:#111827; }
-    .card-dark{ background:#111827; border:1px solid rgba(255,255,255,.08); border-radius:18px; box-shadow:0 20px 60px rgba(0,0,0,.35); }
-    .toolbar{ background:#0d1323; border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:.75rem; }
-    .form-control, .form-select{ background:#0d1323; color:#e5e7eb; border:1px solid rgba(255,255,255,.12); }
-    .form-control::placeholder{ color:#6b7280; }
-    .form-control:focus, .form-select:focus{ border-color:var(--brand); box-shadow:0 0 0 .25rem rgba(13,110,253,.25); }
-    .btn-brand{ background:var(--brand); border-color:var(--brand); }
-    .btn-brand:hover{ filter:brightness(.95); }
-    .badge-soft{ background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15); }
+    :root{
+      --brand: #0d6efd;               /* bleu des boutons */
+      --bg0: #090f1a;                 /* fond profond */
+      --bg1: #0d1323;                 /* navy sombre (cartes/inputs) */
+      --bg2: #0b1222;                 /* variation pour le dégradé */
+      --glowBlue: rgba(13,110,253,.08);  /* halo bleu discret */
+      --glowGold: rgba(255,193,7,.045);  /* halo doré discret (rappel hover navbar) */
+    }
+
+    /* ===== Fond global harmonisé avec toute l’UI ===== */
+    body{
+      min-height: 100vh;
+      background:
+        radial-gradient(60% 80% at 70% 20%, var(--glowBlue), transparent 60%),
+        radial-gradient(80% 60% at 20% 80%, var(--glowGold), transparent 60%),
+        linear-gradient(135deg, var(--bg0) 0%, var(--bg1) 55%, var(--bg2) 100%);
+      background-blend-mode: screen, screen, normal;
+      color: #e5e7eb;
+    }
+
+    /* ===== Navbar noire brillante ===== */
+    .navbar{
+      background: linear-gradient(180deg, #000 0%, #111 50%, #000 100%);
+      box-shadow: 0 2px 10px rgba(0,0,0,.6);
+    }
+    .navbar-brand img{ height:50px; width:auto; transition: transform .3s ease; }
+    .navbar-brand img:hover{ transform: scale(1.05); }
+    .navbar .nav-link{ font-weight:500; transition: color .3s ease; }
+    .navbar .nav-link:hover{ color:#ffc107 !important; }
+    .dropdown-menu{ background:#111; border:none; box-shadow:0 10px 30px rgba(0,0,0,.4); }
+    .dropdown-item{ color:#fff; transition: background-color .3s ease, color .3s ease; }
+    .dropdown-item:hover{ background:#222; color:#ffc107; }
+
+    /* ===== Cartes / modals sombres réutilisables ===== */
+    .card-dark{
+      background:#111827;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
+      color:#e5e7eb;
+    }
     .text-muted-2{ color:#9ca3af !important; }
-    .tab-pane{ margin-top:1rem; }
-    .offcanvas-dark{ background:#0f172a; color:#e5e7eb; }
-    .list-group-dark .list-group-item{ background:#0d1323; color:#e5e7eb; border-color:rgba(255,255,255,.08); }
-    .table-dark-custom{ --bs-table-bg: #111827; --bs-table-striped-bg: #0d1323; --bs-table-color: #e5e7eb; }
+
+    /* ===== Inputs sombres ===== */
+    .form-control, .form-select{
+      background:#0d1323; color:#e5e7eb; border:1px solid rgba(255,255,255,.12);
+    }
+    .form-control::placeholder{ color:#6b7280; }
+    .form-control:focus, .form-select:focus{
+      border-color:var(--brand); box-shadow:0 0 0 .25rem rgba(13,110,253,.25);
+    }
+    .input-group-text{
+      background:#0d1323; color:#9ca3af; border:1px solid rgba(255,255,255,.12);
+    }
+
+    /* ===== Boutons ===== */
+    .btn-brand{ background:var(--brand); border-color:var(--brand); color:#fff; }
+    .btn-brand:hover{ filter:brightness(.95); }
+    .btn-outline-light:hover{ color:#000; background:#ffc107; border-color:#ffc107; }
+
+    /* ===== Table sombre (harmonisée) ===== */
+    .table-dark-custom{
+      --bs-table-bg:#0b1222; --bs-table-striped-bg:#0f1a31; --bs-table-color:#e5e7eb;
+    }
+    .table-dark-custom th, .table-dark-custom td{ border-color: rgba(255,255,255,.08); }
+
+    /* ===== List group sombre ===== */
+    .list-group-dark .list-group-item{
+      background:#0d1323; color:#e5e7eb; border:1px solid rgba(255,255,255,.08);
+    }
+
+    /* ===== Offcanvas sombre ===== */
+    .offcanvas-dark{
+      background:#111827; color:#e5e7eb; border-left:1px solid rgba(255,255,255,.08);
+    }
+
+    /* ===== Onglets (pills) – version “rail” responsive ===== */
+    .tabs-rail{
+      display:flex;
+      gap:.5rem;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      padding:.5rem;
+      scrollbar-width:none;
+      border-radius:14px;
+      background: rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .tabs-rail::-webkit-scrollbar{ display:none; }
+
+    .tab-pill{
+      display:flex; align-items:center; gap:.5rem;
+      white-space:nowrap;
+      padding:.6rem .9rem;
+      border-radius:999px;
+      background:#0d1323;
+      border:1px solid rgba(255,255,255,.06);
+      color:#e5e7eb;
+      font-weight:500;
+      box-shadow: 0 6px 20px rgba(0,0,0,.25);
+    }
+    .tab-pill .bi{ font-size:1rem; opacity:.9; }
+    .tab-pill .tab-count{
+      background:#0b1222;
+      border:1px solid rgba(255,255,255,.1);
+      color:#e5e7eb;
+      padding:.15rem .5rem;
+      border-radius:999px;
+      font-size:.75rem;
+    }
+    .tab-pill:hover{ color:#ffc107; }
+    .tab-pill.active{
+      background:#000;
+      border-color:#000;
+      color:#fff;
+    }
+    .tab-pill.active .tab-count{
+      background:#111827; border-color:#111827; color:#fff;
+    }
+
+    /* Sections transparentes (évite “plaques” plus claires) */
+    header, main, footer, section{ background: transparent; }
+
+    /* Toasts au-dessus des modals */
     .toast-container{ z-index:1080; }
-    .rounded-2xl{ border-radius:1rem; }
-    .cursor-pointer{ cursor:pointer; }
   </style>
 </head>
 <body>
-  <!-- NAVBAR -->
-  <!-- Option: fixe en haut -->
-  <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top"> -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <!-- =========================================== -->
+  <!-- BARRE DE NAVIGATION PRINCIPALE -->
+  <!-- =========================================== -->
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
     <div class="container">
-      <a href="index.html" class="navbar-brand d-flex align-items-center gap-2" href="#">
-        <img src="che-brand-02.png" alt="Logo Complexe Hôtelier Emmanuella"
-             style="height:50px; width:auto;" loading="lazy" />
+      <a href="index.html" class="navbar-brand d-flex align-items-center gap-2">
+        <img src="che-brand-02.png" alt="Logo Complexe Hôtelier Emmanuella" loading="lazy" />
       </a>
 
-      <button class="navbar-toggler" type="button"
-              data-bs-toggle="collapse" data-bs-target="#navbarMain"
-              aria-controls="navbarMain" aria-expanded="false" aria-label="Ouvrir le menu">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Ouvrir le menu">
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navbarMain">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="#"><i class="bi bi-speedometer"></i> Dashboard</a>
+            <!-- Pense à créer dashboard.html si tu souhaites naviguer -->
+            <a class="nav-link" href="dashboard.html">
+              <i class="bi bi-speedometer"></i> Dashboard
+            </a>
           </li>
 
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown"
-               role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="bi bi-hdd-stack-fill"></i> Services
             </a>
             <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
               <li><a class="dropdown-item" href="hebergement.html"><i class="bi bi-house-fill"></i> Hébergement</a></li>
-              <li><a class="dropdown-item" href="#"><i class="bi bi-cup-straw"></i> Boissons et Eaux</a></li>
-              <li><a class="dropdown-item" href="#"><i class="bi bi-egg-fried"></i> Nourritures</a></li>
-              <li><a class="dropdown-item" href="#"><i class="bi bi-tsunami"></i> Piscine</a></li>
+              <li><a class="dropdown-item" href="boissons.html"><i class="bi bi-cup-straw"></i> Boissons et Eaux</a></li>
+              <li><a class="dropdown-item" href="nourriture.html"><i class="bi bi-egg-fried"></i> Nourritures</a></li>
+              <li><a class="dropdown-item" href="piscine.html"><i class="bi bi-tsunami"></i> Piscine</a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#"><i class="bi bi-gear-fill"></i> Configuration</a></li>
+              <li><a class="dropdown-item" href="configuration.html"><i class="bi bi-gear-fill"></i> Configuration</a></li>
             </ul>
           </li>
         </ul>
 
         <div class="d-flex">
           <a href="connexion.html" class="btn btn-primary me-2">Connexion</a>
-          <a href="inscription.html" class="btn btn-outline-light">S’enregistrer</a>
+          <a href="inscription.html" class="btn btn-outline-light">S'enregistrer</a>
         </div>
       </div>
     </div>
   </nav>
 
-
-  <!-- HEADER -->
+  <!-- ===================== EN-TÊTE DE PAGE ===================== -->
   <header class="container py-4">
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-      <div>
-        <h1 class="h3 mb-1">Module Hébergement</h1>
-        <div class="text-muted-2 small">Vue d’ensemble des chambres, réservations, ménage & maintenance</div>
+    <div class="card-dark p-3 p-md-4">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+        <div>
+          <h1 class="h3 mb-1">Hébergement</h1>
+          <div class="text-muted-2 small">Vue d'ensemble des chambres, réservations, ménage & maintenance</div>
+        </div>
+
+        <!-- Actions header (optionnel) -->
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-light btn-sm" id="btnRefreshHeader" title="Actualiser">
+            <i class="bi bi-arrow-repeat"></i>
+          </button>
+          <button class="btn btn-brand btn-sm" data-bs-toggle="modal" data-bs-target="#newResModal">
+            <i class="bi bi-calendar-plus"></i> Nouvelle réservation
+          </button>
+        </div>
       </div>
-      <ul class="nav nav-pills" id="hebergTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-          <button class="nav-link active" id="tab-chambres" data-bs-toggle="pill" data-bs-target="#pane-chambres" type="button" role="tab"><i class="bi bi-grid-3x3-gap"></i> Chambres</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="tab-reserv" data-bs-toggle="pill" data-bs-target="#pane-reserv" type="button" role="tab"><i class="bi bi-journal-bookmark"></i> Réservations</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="tab-hk" data-bs-toggle="pill" data-bs-target="#pane-hk" type="button" role="tab"><i class="bi bi-brush"></i> Ménage</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="tab-maint" data-bs-toggle="pill" data-bs-target="#pane-maint" type="button" role="tab"><i class="bi bi-tools"></i> Maintenance</button>
-        </li>
-      </ul>
+
+      <!-- Rail d’onglets responsive -->
+      <nav class="mt-3">
+        <ul class="nav nav-pills tabs-rail" id="hebergTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link tab-pill active" id="tab-chambres"
+                    data-bs-toggle="pill" data-bs-target="#pane-chambres" type="button" role="tab" aria-controls="pane-chambres" aria-selected="true">
+              <i class="bi bi-grid-3x3-gap"></i>
+              Chambres
+              <span class="tab-count" id="tabCountChambres">--</span>
+            </button>
+          </li>
+
+          <li class="nav-item" role="presentation">
+            <button class="nav-link tab-pill" id="tab-reserv"
+                    data-bs-toggle="pill" data-bs-target="#pane-reserv" type="button" role="tab" aria-controls="pane-reserv" aria-selected="false">
+              <i class="bi bi-journal-bookmark"></i>
+              Réservations
+              <span class="tab-count" id="tabCountReserv">--</span>
+            </button>
+          </li>
+
+          <li class="nav-item" role="presentation">
+            <button class="nav-link tab-pill" id="tab-hk"
+                    data-bs-toggle="pill" data-bs-target="#pane-hk" type="button" role="tab" aria-controls="pane-hk" aria-selected="false">
+              <i class="bi bi-brush"></i>
+              Ménage
+              <span class="tab-count" id="tabCountHK">--</span>
+            </button>
+          </li>
+
+          <li class="nav-item" role="presentation">
+            <button class="nav-link tab-pill" id="tab-maint"
+                    data-bs-toggle="pill" data-bs-target="#pane-maint" type="button" role="tab" aria-controls="pane-maint" aria-selected="false">
+              <i class="bi bi-tools"></i>
+              Maintenance
+              <span class="tab-count" id="tabCountMaint">--</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
     </div>
   </header>
 
+  <!-- ===================== CONTENU PRINCIPAL ===================== -->
   <main class="container">
     <div class="tab-content" id="hebergTabsContent">
-      <!-- ================== CHAMBRES ================== -->
+      <!-- ========== ONGLET CHAMBRES ========== -->
       <div class="tab-pane fade show active" id="pane-chambres" role="tabpanel" aria-labelledby="tab-chambres">
-        <!-- Toolbar -->
+
+        <!-- Outils -->
         <div class="toolbar mb-3">
           <div class="row g-2 align-items-end">
             <div class="col-12 col-md-3">
               <label class="form-label">Type</label>
               <select class="form-select" id="filterType">
-                <option value="">Tous</option>
+                <option value="">Tous les types</option>
               </select>
             </div>
             <div class="col-12 col-md-3">
               <label class="form-label">Statut</label>
               <select class="form-select" id="filterStatus">
-                <option value="">Tous</option>
+                <option value="">Tous les statuts</option>
                 <option value="free">Libre</option>
                 <option value="reserved">Réservée</option>
                 <option value="occupied">Occupée</option>
@@ -131,55 +282,71 @@
               <input class="form-control" id="searchRoom" placeholder="Numéro, étage, notes…" />
             </div>
             <div class="col-12 col-md-2 d-grid d-md-flex gap-2">
-              <button class="btn btn-brand w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#newResModal"><i class="bi bi-calendar-plus"></i> Réserver</button>
-              <button class="btn btn-outline-light w-100 w-md-auto" id="btnRefresh"><i class="bi bi-arrow-repeat"></i></button>
+              <button class="btn btn-brand w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#newResModal">
+                <i class="bi bi-calendar-plus"></i> Réserver
+              </button>
+              <button class="btn btn-outline-light w-100 w-md-auto" id="btnRefresh" title="Actualiser">
+                <i class="bi bi-arrow-repeat"></i>
+              </button>
             </div>
           </div>
         </div>
 
-        <!-- KPI Cards -->
+        <!-- KPI -->
         <div class="row g-3 mb-3">
           <div class="col-6 col-lg-3">
             <div class="card card-dark p-3">
-              <div class="d-flex justify-content-between"><span class="text-muted-2">Occupation (aujourd’hui)</span><i class="bi bi-houses"></i></div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted-2">Occupation (aujourd'hui)</span><i class="bi bi-houses"></i>
+              </div>
               <div class="h4 mb-0" id="kpiOcc">--%</div>
             </div>
           </div>
           <div class="col-6 col-lg-3">
             <div class="card card-dark p-3">
-              <div class="d-flex justify-content-between"><span class="text-muted-2">Arrivées</span><i class="bi bi-box-arrow-in-right"></i></div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted-2">Arrivées</span><i class="bi bi-box-arrow-in-right"></i>
+              </div>
               <div class="h4 mb-0" id="kpiArr">--</div>
             </div>
           </div>
           <div class="col-6 col-lg-3">
             <div class="card card-dark p-3">
-              <div class="d-flex justify-content-between"><span class="text-muted-2">Départs</span><i class="bi bi-box-arrow-right"></i></div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted-2">Départs</span><i class="bi bi-box-arrow-right"></i>
+              </div>
               <div class="h4 mb-0" id="kpiDep">--</div>
             </div>
           </div>
           <div class="col-6 col-lg-3">
             <div class="card card-dark p-3">
-              <div class="d-flex justify-content-between"><span class="text-muted-2">Chambres HS</span><i class="bi bi-cone-striped"></i></div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted-2">Chambres HS</span><i class="bi bi-cone-striped"></i>
+              </div>
               <div class="h4 mb-0" id="kpiOoo">--</div>
             </div>
           </div>
         </div>
 
-        <!-- Grid chambres -->
+        <!-- Grille des chambres -->
         <div class="row" id="roomsGrid"></div>
       </div>
 
-      <!-- ================== RÉSERVATIONS ================== -->
+      <!-- ========== ONGLET RÉSERVATIONS ========== -->
       <div class="tab-pane fade" id="pane-reserv" role="tabpanel" aria-labelledby="tab-reserv">
         <div class="card card-dark p-3">
           <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="mb-0">Réservations (démo)</h5>
-            <button class="btn btn-brand" data-bs-toggle="modal" data-bs-target="#newResModal"><i class="bi bi-plus-lg"></i> Nouvelle</button>
+            <h5 class="mb-0">Réservations</h5>
+            <button class="btn btn-brand" data-bs-toggle="modal" data-bs-target="#newResModal">
+              <i class="bi bi-plus-lg"></i> Nouvelle réservation
+            </button>
           </div>
           <div class="table-responsive">
             <table class="table table-dark table-striped table-dark-custom align-middle mb-0">
               <thead>
-                <tr><th>Code</th><th>Client</th><th>Chambre</th><th>Arrivée</th><th>Départ</th><th>Statut</th></tr>
+                <tr>
+                  <th>Code</th><th>Client</th><th>Chambre</th><th>Arrivée</th><th>Départ</th><th>Statut</th>
+                </tr>
               </thead>
               <tbody id="reservTable"></tbody>
             </table>
@@ -187,41 +354,21 @@
         </div>
       </div>
 
-      <!-- ================== MÉNAGE ================== -->
+      <!-- ========== ONGLET MÉNAGE ========== -->
       <div class="tab-pane fade" id="pane-hk" role="tabpanel" aria-labelledby="tab-hk">
         <div class="row g-3">
-          <div class="col-md-3">
-            <div class="card card-dark">
-              <div class="card-header border-0"><strong>Sale</strong></div>
-              <ul class="list-group list-group-flush list-group-dark" id="hk-dirty"></ul>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="card card-dark">
-              <div class="card-header border-0"><strong>En cours</strong></div>
-              <ul class="list-group list-group-flush list-group-dark" id="hk-progress"></ul>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="card card-dark">
-              <div class="card-header border-0"><strong>Inspectée</strong></div>
-              <ul class="list-group list-group-flush list-group-dark" id="hk-inspected"></ul>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="card card-dark">
-              <div class="card-header border-0"><strong>Propre</strong></div>
-              <ul class="list-group list-group-flush list-group-dark" id="hk-clean"></ul>
-            </div>
-          </div>
+          <div class="col-md-3"><div class="card card-dark"><div class="card-header border-0"><strong>Sale</strong></div><ul class="list-group list-group-flush list-group-dark" id="hk-dirty"></ul></div></div>
+          <div class="col-md-3"><div class="card card-dark"><div class="card-header border-0"><strong>En cours</strong></div><ul class="list-group list-group-flush list-group-dark" id="hk-progress"></ul></div></div>
+          <div class="col-md-3"><div class="card card-dark"><div class="card-header border-0"><strong>Inspectée</strong></div><ul class="list-group list-group-flush list-group-dark" id="hk-inspected"></ul></div></div>
+          <div class="col-md-3"><div class="card card-dark"><div class="card-header border-0"><strong>Propre</strong></div><ul class="list-group list-group-flush list-group-dark" id="hk-clean"></ul></div></div>
         </div>
       </div>
 
-      <!-- ================== MAINTENANCE ================== -->
+      <!-- ========== ONGLET MAINTENANCE ========== -->
       <div class="tab-pane fade" id="pane-maint" role="tabpanel" aria-labelledby="tab-maint">
         <div class="card card-dark p-3">
           <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="mb-0">Tickets (démo)</h5>
+            <h5 class="mb-0">Tickets de maintenance</h5>
             <button class="btn btn-outline-light" id="btnNewTicket"><i class="bi bi-tools"></i> Nouveau ticket</button>
           </div>
           <div id="ticketsList" class="row g-3"></div>
@@ -230,68 +377,48 @@
     </div>
   </main>
 
-  <!-- OFFCANVAS DÉTAIL CHAMBRE -->
+  <!-- ===================== OFFCANVAS DÉTAILS ===================== -->
   <div class="offcanvas offcanvas-end offcanvas-dark" tabindex="-1" id="roomCanvas" aria-labelledby="roomCanvasLabel">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="roomCanvasLabel">Chambre</h5>
+      <h5 class="offcanvas-title" id="roomCanvasLabel">Détails de la chambre</h5>
       <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Fermer"></button>
     </div>
-    <div class="offcanvas-body">
-      <div id="roomDetail"></div>
-    </div>
+    <div class="offcanvas-body"><div id="roomDetail"></div></div>
   </div>
 
-  <!-- MODAL NOUVELLE RÉSERVATION -->
+  <!-- ===================== MODAL NOUVELLE RÉSERVATION ===================== -->
   <div class="modal fade" id="newResModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content card-dark">
         <div class="modal-header border-0">
           <h5 class="modal-title"><i class="bi bi-calendar-plus me-2"></i>Nouvelle réservation</h5>
-          <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          <button class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
         </div>
         <div class="modal-body">
           <form id="newResForm" novalidate>
             <div class="row g-3">
-              <div class="col-md-4">
-                <label class="form-label">Arrivée</label>
-                <input type="date" class="form-control" id="resIn" required>
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Départ</label>
-                <input type="date" class="form-control" id="resOut" required>
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Type de chambre</label>
-                <select class="form-select" id="resType" required></select>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Client</label>
-                <input class="form-control" id="resGuest" placeholder="Nom du client" required />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Contact (optionnel)</label>
-                <input class="form-control" id="resContact" placeholder="Téléphone ou e‑mail" />
-              </div>
-              <div class="col-12">
-                <label class="form-label">Notes</label>
-                <input class="form-control" id="resNotes" placeholder="Préférences, heure d’arrivée, …" />
-              </div>
+              <div class="col-md-4"><label class="form-label">Date d'arrivée</label><input type="date" class="form-control" id="resIn" required></div>
+              <div class="col-md-4"><label class="form-label">Date de départ</label><input type="date" class="form-control" id="resOut" required></div>
+              <div class="col-md-4"><label class="form-label">Type de chambre</label><select class="form-select" id="resType" required></select></div>
+              <div class="col-md-6"><label class="form-label">Nom du client</label><input class="form-control" id="resGuest" placeholder="Nom du client" required /></div>
+              <div class="col-md-6"><label class="form-label">Contact</label><input class="form-control" id="resContact" placeholder="Téléphone ou e-mail" /></div>
+              <div class="col-12"><label class="form-label">Notes supplémentaires</label><textarea class="form-control" id="resNotes" placeholder="Préférences, heure d'arrivée, demandes spéciales…" rows="2"></textarea></div>
             </div>
           </form>
         </div>
         <div class="modal-footer border-0">
           <button class="btn btn-outline-light" data-bs-dismiss="modal">Annuler</button>
-          <button class="btn btn-brand" id="btnCreateRes"><i class="bi bi-check2"></i> Créer</button>
+          <button class="btn btn-brand" id="btnCreateRes"><i class="bi bi-check2"></i> Créer la réservation</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Toasts -->
+  <!-- ===================== TOASTS ===================== -->
   <div class="toast-container position-fixed top-0 end-0 p-3">
     <div id="mainToast" class="toast align-items-center text-bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="d-flex">
-        <div class="toast-body" id="toastMsg">Prêt.</div>
+        <div class="toast-body" id="toastMsg">Système prêt</div>
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
       </div>
     </div>
@@ -301,278 +428,507 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
   <script>
-    // ========================= Données de démonstration =========================
-    const ROOM_TYPES = [
-      { id: 1, name: 'Standard', capacity: 2 },
-      { id: 2, name: 'Deluxe', capacity: 3 },
-      { id: 3, name: 'Suite', capacity: 4 },
-    ];
-
-    const ROOMS = [
-      // id, number, floor, typeId, status: free|reserved|occupied|ooo, hk: clean|dirty|inspected, notes
-      {id:1, number:'101', floor:'1', typeId:1, status:'free',     hk:'clean',     notes:''},
-      {id:2, number:'102', floor:'1', typeId:1, status:'reserved', hk:'clean',     notes:'Late check-in'},
-      {id:3, number:'103', floor:'1', typeId:1, status:'occupied', hk:'dirty',     notes:'Famille'},
-      {id:4, number:'104', floor:'1', typeId:2, status:'free',     hk:'inspected', notes:''},
-      {id:5, number:'105', floor:'1', typeId:2, status:'occupied', hk:'dirty',     notes:'VIP'},
-      {id:6, number:'201', floor:'2', typeId:2, status:'free',     hk:'clean',     notes:''},
-      {id:7, number:'202', floor:'2', typeId:1, status:'reserved', hk:'clean',     notes:''},
-      {id:8, number:'203', floor:'2', typeId:3, status:'ooo',      hk:'dirty',     notes:'Clim HS'},
-      {id:9, number:'204', floor:'2', typeId:3, status:'free',     hk:'clean',     notes:''},
-      {id:10, number:'205', floor:'2', typeId:3, status:'occupied',hk:'dirty',     notes:''},
-      {id:11, number:'301', floor:'3', typeId:1, status:'free',     hk:'clean',    notes:''},
-      {id:12, number:'302', floor:'3', typeId:2, status:'free',     hk:'inspected',notes:''},
-      {id:13, number:'303', floor:'3', typeId:1, status:'reserved', hk:'clean',    notes:''},
-      {id:14, number:'304', floor:'3', typeId:2, status:'free',     hk:'dirty',    notes:''},
-      {id:15, number:'305', floor:'3', typeId:3, status:'ooo',      hk:'dirty',    notes:'Peinture'},
-      {id:16, number:'401', floor:'4', typeId:1, status:'occupied', hk:'dirty',    notes:''},
-      {id:17, number:'402', floor:'4', typeId:1, status:'free',     hk:'clean',    notes:''},
-      {id:18, number:'403', floor:'4', typeId:2, status:'reserved', hk:'inspected',notes:''},
-      {id:19, number:'404', floor:'4', typeId:2, status:'free',     hk:'clean',    notes:''},
-      {id:20, number:'405', floor:'4', typeId:3, status:'free',     hk:'clean',    notes:'Vue piscine'},
-    ];
-
-    let RESERVATIONS = [
-      {code:'CHE-2025-0001', guest:'Yao K.', room:'102', in:'2025-09-23', out:'2025-09-25', status:'confirmed'},
-      {code:'CHE-2025-0002', guest:'Touré A.', room:'203', in:'2025-09-22', out:'2025-09-24', status:'checked_in'},
-      {code:'CHE-2025-0003', guest:'Kouassi N.', room:'205', in:'2025-09-21', out:'2025-09-23', status:'checked_in'},
-    ];
-
-    const HK_COLUMNS = {
-      dirty: document.getElementById('hk-dirty'),
-      progress: document.getElementById('hk-progress'),
-      inspected: document.getElementById('hk-inspected'),
-      clean: document.getElementById('hk-clean')
+    // ===================== ÉTAT APP =====================
+    const AppState = {
+      roomTypes: [
+        { id: 1, name: 'Standard', capacity: 2 },
+        { id: 2, name: 'Deluxe', capacity: 3 },
+        { id: 3, name: 'Suite',  capacity: 4 },
+      ],
+      rooms: [
+        {id:1, number:'101', floor:'1', typeId:1, status:'free',     hk:'clean',     notes:''},
+        {id:2, number:'102', floor:'1', typeId:1, status:'reserved', hk:'clean',     notes:'Arrivée tardive'},
+        {id:3, number:'103', floor:'1', typeId:1, status:'occupied', hk:'dirty',     notes:'Famille avec enfants'},
+        {id:4, number:'104', floor:'1', typeId:2, status:'free',     hk:'inspected', notes:''},
+        {id:5, number:'105', floor:'1', typeId:2, status:'occupied', hk:'dirty',     notes:'Client VIP'},
+        {id:6, number:'201', floor:'2', typeId:2, status:'free',     hk:'clean',     notes:''},
+        {id:7, number:'202', floor:'2', typeId:1, status:'reserved', hk:'clean',     notes:''},
+        {id:8, number:'203', floor:'2', typeId:3, status:'ooo',      hk:'dirty',     notes:'Climatisation en panne'},
+        {id:9, number:'204', floor:'2', typeId:3, status:'free',     hk:'clean',     notes:''},
+        {id:10, number:'205', floor:'2', typeId:3, status:'occupied',hk:'dirty',     notes:''},
+      ],
+      reservations: [
+        {code:'CHE-2025-0001', guest:'Martin Dubois',  room:'102', in:'2025-09-23', out:'2025-09-25', status:'confirmed'},
+        {code:'CHE-2025-0002', guest:'Sophie Lambert', room:'203', in:'2025-09-22', out:'2025-09-24', status:'checked_in'},
+      ],
+      tickets: [
+        {id:1, room:'203', title:'Climatisation HS', status:'open',        createdAt: '2025-09-20'},
+        {id:2, room:'305', title:'Peinture écaillée', status:'in_progress',createdAt: '2025-09-19'},
+      ],
+      saveToLocalStorage(){
+        try{
+          const data = { rooms:this.rooms, reservations:this.reservations, tickets:this.tickets, lastUpdated:new Date().toISOString() };
+          localStorage.setItem('hotelManagementData', JSON.stringify(data));
+        }catch(e){ console.error(e); showToast('Erreur de sauvegarde des données','error'); }
+      },
+      loadFromLocalStorage(){
+        try{
+          const saved = localStorage.getItem('hotelManagementData');
+          if(saved){
+            const data = JSON.parse(saved);
+            this.rooms = data.rooms || this.rooms;
+            this.reservations = data.reservations || this.reservations;
+            this.tickets = data.tickets || this.tickets;
+            showToast('Données chargées avec succès','success');
+          }
+        }catch(e){ console.error(e); showToast('Erreur de chargement des données','error'); }
+      }
     };
 
-    const toastEl = document.getElementById('mainToast');
-    const toast = new bootstrap.Toast(toastEl, { delay: 2200 });
+    // ===================== RÉFÉRENCES DOM =====================
+    const roomsGrid   = document.getElementById('roomsGrid');
+    const filterType  = document.getElementById('filterType');
+    const filterStatus= document.getElementById('filterStatus');
+    const searchRoom  = document.getElementById('searchRoom');
+    const reservTable = document.getElementById('reservTable');
+    const ticketsList = document.getElementById('ticketsList');
+
+    const HK_COLUMNS = {
+      dirty     : document.getElementById('hk-dirty'),
+      progress  : document.getElementById('hk-progress'),
+      inspected : document.getElementById('hk-inspected'),
+      clean     : document.getElementById('hk-clean')
+    };
+
+    const toastEl  = document.getElementById('mainToast');
+    const toast    = new bootstrap.Toast(toastEl, { delay: 3000 });
     const toastMsg = document.getElementById('toastMsg');
 
-    // ========================= Utilitaires UI =========================
-    const typeName = (id) => ROOM_TYPES.find(t => t.id === id)?.name || '';
-    const statusBadge = (s) => ({
-      free: '<span class="badge bg-success">Libre</span>',
-      reserved: '<span class="badge bg-warning text-dark">Réservée</span>',
-      occupied: '<span class="badge bg-primary">Occupée</span>',
-      ooo: '<span class="badge bg-secondary">HS</span>'
-    })[s] || '';
-    const hkBadge = (s) => ({
-      clean: '<span class="badge bg-success-subtle text-white badge-soft">Propre</span>',
-      dirty: '<span class="badge bg-danger">Sale</span>',
-      inspected: '<span class="badge bg-info">Inspectée</span>'
-    })[s] || '';
+    // Compteurs d’onglets
+    const tabCountChambres = document.getElementById('tabCountChambres');
+    const tabCountReserv   = document.getElementById('tabCountReserv');
+    const tabCountHK       = document.getElementById('tabCountHK');
+    const tabCountMaint    = document.getElementById('tabCountMaint');
 
-    function showToast(msg){ toastMsg.textContent = msg; toast.show(); }
+    // ===================== UTILS =====================
+    function getRoomTypeName(typeId){ const t = AppState.roomTypes.find(x=>x.id===typeId); return t ? t.name : 'Type inconnu'; }
+    function getStatusBadge(status){
+      const b = {
+        free:'<span class="badge bg-success">Libre</span>',
+        reserved:'<span class="badge bg-warning text-dark">Réservée</span>',
+        occupied:'<span class="badge bg-primary">Occupée</span>',
+        ooo:'<span class="badge bg-secondary">Hors service</span>'
+      };
+      return b[status] || '';
+    }
+    function getHousekeepingBadge(status){
+      const b = {
+        clean:'<span class="badge bg-success">Propre</span>',
+        dirty:'<span class="badge bg-danger">Sale</span>',
+        inspected:'<span class="badge bg-info">Inspectée</span>'
+      };
+      return b[status] || '';
+    }
+    function showToast(message, type='info'){
+      const types = {
+        success:'text-bg-success', error:'text-bg-danger',
+        warning:'text-bg-warning', info:'text-bg-dark'
+      };
+      toastEl.className = `toast align-items-center ${types[type] || types.info} border-0`;
+      toastMsg.textContent = message;
+      toast.show();
+    }
+    function getCurrentDate(){ return new Date().toISOString().split('T')[0]; }
+    function debounce(fn, wait){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), wait); }; }
 
-    // ========================= Rendu Chambres =========================
-    const roomsGrid = document.getElementById('roomsGrid');
-    const filterType = document.getElementById('filterType');
-    const filterStatus = document.getElementById('filterStatus');
-    const searchRoom = document.getElementById('searchRoom');
+    // Met à jour les badges des onglets (responsive + dynamique)
+    function updateTabBadges(){
+      tabCountChambres.textContent = AppState.rooms.length;
+      tabCountReserv.textContent   = AppState.reservations.length;
+      // Pour Ménage, on met le nombre de chambres "dirty"
+      tabCountHK.textContent       = AppState.rooms.filter(r => r.hk === 'dirty').length;
+      // Pour Maintenance, on montre tickets non clos
+      tabCountMaint.textContent    = AppState.tickets.filter(t => t.status !== 'closed').length;
+    }
 
-    function populateTypeFilters(){
-      ROOM_TYPES.forEach(t=>{
-        const opt = document.createElement('option');
-        opt.value = t.id; opt.textContent = t.name; filterType.appendChild(opt);
-        const opt2 = document.createElement('option');
-        opt2.value = t.id; opt2.textContent = t.name; document.getElementById('resType').appendChild(opt2);
+    // ===================== CHAMBRES =====================
+    function populateRoomTypeFilters(){
+      filterType.innerHTML = '<option value="">Tous les types</option>';
+      document.getElementById('resType').innerHTML = '<option value="">Sélectionnez un type</option>';
+      AppState.roomTypes.forEach(t=>{
+        filterType.appendChild(new Option(t.name, t.id));
+        document.getElementById('resType').appendChild(new Option(t.name, t.id));
       });
     }
 
-    function filteredRooms(){
-      const t = filterType.value; const s = filterStatus.value; const q = searchRoom.value.trim().toLowerCase();
-      return ROOMS.filter(r=>{
-        const byT = !t || String(r.typeId) === String(t);
-        const byS = !s || r.status === s;
-        const byQ = !q || r.number.toLowerCase().includes(q) || r.floor.toLowerCase().includes(q) || r.notes.toLowerCase().includes(q);
-        return byT && byS && byQ;
+    function getFilteredRooms(){
+      const tf = filterType.value, sf = filterStatus.value, q = searchRoom.value.trim().toLowerCase();
+      return AppState.rooms.filter(r=>{
+        const byType = !tf || r.typeId.toString()===tf;
+        const byStatus = !sf || r.status===sf;
+        const byText = !q || r.number.toLowerCase().includes(q) ||
+                        r.floor.toLowerCase().includes(q)   ||
+                        r.notes.toLowerCase().includes(q)   ||
+                        getRoomTypeName(r.typeId).toLowerCase().includes(q);
+        return byType && byStatus && byText;
       });
     }
 
-    function renderRooms(){
-      const list = filteredRooms();
-      roomsGrid.innerHTML = list.map(r=>{
-        return `
+    function renderRoomsGrid(){
+      const list = getFilteredRooms();
+      if(!list.length){
+        roomsGrid.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <i class="bi bi-search display-1 text-muted-2"></i>
+            <h4 class="mt-3 text-muted-2">Aucune chambre trouvée</h4>
+            <p class="text-muted-2">Aucune chambre ne correspond à vos critères de recherche.</p>
+          </div>`;
+        updateKPICards();
+        updateTabBadges();
+        return;
+      }
+
+      roomsGrid.innerHTML = list.map(room=>`
         <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mb-3">
           <div class="card card-dark h-100">
             <div class="card-body d-flex flex-column">
               <div class="d-flex justify-content-between align-items-start">
                 <div>
-                  <h5 class="card-title mb-1">Ch. ${r.number}</h5>
-                  <div class="small text-muted-2">${typeName(r.typeId)} • Étage ${r.floor}</div>
+                  <h5 class="card-title mb-1">Ch. ${room.number}</h5>
+                  <div class="small text-muted-2">${getRoomTypeName(room.typeId)} • Étage ${room.floor}</div>
                 </div>
-                <div>${statusBadge(r.status)}</div>
+                <div>${getStatusBadge(room.status)}</div>
               </div>
-              <div class="mt-2">${hkBadge(r.hk)}</div>
-              ${r.notes ? `<div class="mt-2 small text-muted-2"><i class="bi bi-info-circle"></i> ${r.notes}</div>` : ''}
+
+              <div class="mt-2">${getHousekeepingBadge(room.hk)}</div>
+
+              ${room.notes ? `<div class="mt-2 small text-muted-2"><i class="bi bi-info-circle"></i> ${room.notes}</div>` : ''}
+
               <div class="d-grid gap-2 mt-3 mt-auto">
-                <button class="btn btn-outline-light btn-sm" data-room="${r.id}" onclick="openRoom(${r.id})"><i class="bi bi-eye"></i> Détails</button>
-                ${r.status==='free' && !['ooo'].includes(r.status) ? `<button class="btn btn-brand btn-sm" data-bs-toggle="modal" data-bs-target="#newResModal" onclick="prefillType(${r.typeId})"><i class="bi bi-calendar-plus"></i> Réserver</button>` : ''}
-              </div>
-            </div>
-          </div>
-        </div>`;
-      }).join('');
-      updateKpis();
-    }
+                <button class="btn btn-outline-light btn-sm" onclick="openRoomDetails(${room.id})">
+                  <i class="bi bi-eye"></i> Détails
+                </button>
 
-    function updateKpis(){
-      const total = ROOMS.filter(r=>r.status!=='ooo').length;
-      const occ = ROOMS.filter(r=>r.status==='occupied').length;
-      const occRate = total? Math.round((occ/total)*100):0;
-      document.getElementById('kpiOcc').textContent = occRate + '%';
-      document.getElementById('kpiArr').textContent = RESERVATIONS.filter(r=>r.in===today()).length;
-      document.getElementById('kpiDep').textContent = RESERVATIONS.filter(r=>r.out===today()).length;
-      document.getElementById('kpiOoo').textContent = ROOMS.filter(r=>r.status==='ooo').length;
-    }
-
-    function today(){ const d=new Date(); return d.toISOString().slice(0,10); }
-
-    // ========================= Détail chambre =========================
-    window.openRoom = function(id){
-      const r = ROOMS.find(x=>x.id===id); if(!r) return;
-      const el = document.getElementById('roomDetail');
-      el.innerHTML = `
-        <div class="d-flex justify-content-between align-items-start mb-2">
-          <div>
-            <h4 class="mb-0">Chambre ${r.number}</h4>
-            <div class="text-muted-2 small">${typeName(r.typeId)} • Étage ${r.floor}</div>
-          </div>
-          <div>${statusBadge(r.status)}</div>
-        </div>
-        <div class="mb-3">${hkBadge(r.hk)}</div>
-        ${r.notes? `<div class="small text-muted-2 mb-3"><i class="bi bi-card-text"></i> ${r.notes}</div>`:''}
-        <div class="d-flex gap-2 flex-wrap">
-          <button class="btn btn-outline-light btn-sm" onclick="setHk(${r.id}, 'dirty')"><i class="bi bi-trash"></i> Marquer sale</button>
-          <button class="btn btn-outline-light btn-sm" onclick="setHk(${r.id}, 'inspected')"><i class="bi bi-search"></i> Inspectée</button>
-          <button class="btn btn-outline-light btn-sm" onclick="setHk(${r.id}, 'clean')"><i class="bi bi-check2"></i> Propre</button>
-          <button class="btn btn-outline-warning btn-sm" onclick="toggleOoo(${r.id})"><i class="bi bi-cone-striped"></i> ${r.status==='ooo'?'Réactiver':'Mettre HS'}</button>
-        </div>
-        <hr/>
-        <div class="small text-muted-2">Prochaines réservations (démo)</div>
-        <ul class="mt-2 mb-0">
-          ${RESERVATIONS.filter(x=>x.room===r.number).slice(0,3).map(x=>`<li>${x.code} • ${x.in}→${x.out} • <span class="badge bg-secondary">${x.status}</span></li>`).join('') || '<li>Aucune</li>'}
-        </ul>`;
-      bootstrap.Offcanvas.getOrCreateInstance('#roomCanvas').show();
-    }
-
-    window.setHk = function(id, status){
-      const r = ROOMS.find(x=>x.id===id); if(!r) return;
-      r.hk = status; showToast(`Chambre ${r.number}: statut ménage mis à jour.`);
-      renderRooms(); renderHkBoard();
-    }
-
-    window.toggleOoo = function(id){
-      const r = ROOMS.find(x=>x.id===id); if(!r) return;
-      r.status = (r.status==='ooo')? 'free' : 'ooo';
-      showToast(`Chambre ${r.number}: ${r.status==='ooo'?'mise HS':'réactivée'}.`);
-      renderRooms(); renderHkBoard();
-    }
-
-    window.prefillType = function(typeId){
-      document.getElementById('resType').value = String(typeId);
-    }
-
-    // ========================= Réservations (démo) =========================
-    const reservTable = document.getElementById('reservTable');
-    function renderReserv(){
-      reservTable.innerHTML = RESERVATIONS.map(r=>{
-        return `<tr><td>${r.code}</td><td>${r.guest}</td><td>${r.room}</td><td>${r.in}</td><td>${r.out}</td><td><span class="badge bg-secondary">${r.status}</span></td></tr>`;
-      }).join('');
-    }
-
-    document.getElementById('btnCreateRes').addEventListener('click', ()=>{
-      const form = document.getElementById('newResForm');
-      if(!form.checkValidity()) { form.classList.add('was-validated'); return; }
-      const t = document.getElementById('resType').value;
-      const freeRoom = ROOMS.find(r=> String(r.typeId)===String(t) && r.status==='free');
-      if(!freeRoom){ showToast('Aucune chambre libre pour ce type.'); return; }
-      freeRoom.status = 'reserved';
-      const code = 'CHE-2025-' + String(Math.floor(Math.random()*9999)).padStart(4,'0');
-      RESERVATIONS.unshift({code, guest: document.getElementById('resGuest').value.trim() || 'Client', room: freeRoom.number, in: document.getElementById('resIn').value || today(), out: document.getElementById('resOut').value || today(), status:'confirmed'});
-      showToast(`Réservation ${code} créée pour chambre ${freeRoom.number}.`);
-      renderRooms(); renderReserv();
-      bootstrap.Modal.getOrCreateInstance('#newResModal').hide();
-      form.reset(); form.classList.remove('was-validated');
-    });
-
-    // ========================= Ménage Board =========================
-    function renderHkBoard(){
-      Object.values(HK_COLUMNS).forEach(ul=>ul.innerHTML='');
-      ROOMS.forEach(r=>{
-        const li = document.createElement('li');
-        li.className = 'list-group-item d-flex justify-content-between align-items-center';
-        li.innerHTML = `<span>Ch. ${r.number} <span class="text-muted-2">• ${typeName(r.typeId)}</span></span>
-                        <div class="btn-group btn-group-sm">
-                          <button class="btn btn-outline-light" onclick="setHk(${r.id}, 'dirty')"><i class="bi bi-trash"></i></button>
-                          <button class="btn btn-outline-light" onclick="setHk(${r.id}, 'inspected')"><i class="bi bi-search"></i></button>
-                          <button class="btn btn-outline-light" onclick="setHk(${r.id}, 'clean')"><i class="bi bi-check2"></i></button>
-                        </div>`;
-        if(r.hk==='dirty') HK_COLUMNS.dirty.appendChild(li);
-        else if(r.hk==='inspected') HK_COLUMNS.inspected.appendChild(li);
-        else if(r.hk==='clean') HK_COLUMNS.clean.appendChild(li);
-        else HK_COLUMNS.progress.appendChild(li);
-      });
-    }
-
-    // ========================= Maintenance (démo) =========================
-    let TICKETS = [
-      {id:1, room:'203', title:'Climatisation HS', status:'open'},
-      {id:2, room:'305', title:'Peinture écaillée', status:'in_progress'}
-    ];
-    const ticketsList = document.getElementById('ticketsList');
-
-    function renderTickets(){
-      ticketsList.innerHTML = TICKETS.map(t=>`
-        <div class="col-md-4">
-          <div class="card card-dark h-100">
-            <div class="card-body d-flex flex-column">
-              <div class="d-flex justify-content-between align-items-start">
-                <div>
-                  <div class="small text-muted-2">Ch. ${t.room}</div>
-                  <h5 class="mb-1">${t.title}</h5>
-                </div>
-                <span class="badge ${t.status==='open'?'bg-danger':(t.status==='in_progress'?'bg-warning text-dark':'bg-success')}">${t.status}</span>
-              </div>
-              <div class="mt-auto d-grid gap-2">
-                ${t.status!=='closed' ? `<button class="btn btn-outline-light btn-sm" onclick="advanceTicket(${t.id})"><i class="bi bi-arrow-right"></i> Avancer</button>`:''}
+                ${room.status === 'free' ? `
+                  <button class="btn btn-brand btn-sm"
+                          data-bs-toggle="modal" data-bs-target="#newResModal"
+                          onclick="prefillReservationType(${room.typeId})">
+                    <i class="bi bi-calendar-plus"></i> Réserver
+                  </button>
+                ` : ''}
               </div>
             </div>
           </div>
         </div>`).join('');
+
+      updateKPICards();
+      updateTabBadges();
     }
 
-    window.advanceTicket = function(id){
-      const t = TICKETS.find(x=>x.id===id); if(!t) return;
-      t.status = t.status==='open' ? 'in_progress' : (t.status==='in_progress' ? 'closed' : 'closed');
-      renderTickets(); showToast('Ticket mis à jour.');
+    function updateKPICards(){
+      const total = AppState.rooms.filter(r=>r.status!=='ooo').length;
+      const occ = AppState.rooms.filter(r=>r.status==='occupied').length;
+      const rate = total>0 ? Math.round((occ/total)*100) : 0;
+
+      const today = getCurrentDate();
+      const arr = AppState.reservations.filter(r=>r.in===today).length;
+      const dep = AppState.reservations.filter(r=>r.out===today).length;
+      const ooo = AppState.rooms.filter(r=>r.status==='ooo').length;
+
+      document.getElementById('kpiOcc').textContent = `${rate}%`;
+      document.getElementById('kpiArr').textContent = arr;
+      document.getElementById('kpiDep').textContent = dep;
+      document.getElementById('kpiOoo').textContent = ooo;
     }
 
-    document.getElementById('btnNewTicket').addEventListener('click', ()=>{
-      const id = Math.max(0,...TICKETS.map(t=>t.id))+1;
-      TICKETS.unshift({id, room:'105', title:'TV ne s’allume pas', status:'open'});
-      renderTickets(); showToast('Ticket créé.');
+    // ===== Offcanvas détails =====
+    window.openRoomDetails = function(id){
+      const room = AppState.rooms.find(r=>r.id===id);
+      if(!room){ showToast('Chambre non trouvée','error'); return; }
+
+      const res = AppState.reservations.filter(x=>x.room===room.number);
+      document.getElementById('roomDetail').innerHTML = `
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <div>
+            <h4 class="mb-0">Chambre ${room.number}</h4>
+            <div class="text-muted-2 small">${getRoomTypeName(room.typeId)} • Étage ${room.floor}</div>
+          </div>
+          <div>${getStatusBadge(room.status)}</div>
+        </div>
+
+        <div class="mb-3">${getHousekeepingBadge(room.hk)}</div>
+
+        ${room.notes ? `<div class="alert alert-dark small mb-3"><i class="bi bi-card-text"></i> ${room.notes}</div>` : ''}
+
+        <div class="d-flex gap-2 flex-wrap mb-4">
+          <button class="btn btn-outline-light btn-sm" onclick="updateHousekeepingStatus(${room.id}, 'dirty')">
+            <i class="bi bi-trash"></i> Marquer sale
+          </button>
+          <button class="btn btn-outline-light btn-sm" onclick="updateHousekeepingStatus(${room.id}, 'inspected')">
+            <i class="bi bi-search"></i> Inspectée
+          </button>
+          <button class="btn btn-outline-light btn-sm" onclick="updateHousekeepingStatus(${room.id}, 'clean')">
+            <i class="bi bi-check2"></i> Propre
+          </button>
+          <button class="btn btn-outline-warning btn-sm" onclick="toggleOutOfOrderStatus(${room.id})">
+            <i class="bi bi-cone-striped"></i> ${room.status==='ooo'?'Réactiver':'Mettre HS'}
+          </button>
+        </div>
+
+        <hr>
+
+        <h6 class="mb-3">Réservations à venir</h6>
+        ${res.length ? `
+          <div class="small">
+            ${res.slice(0,3).map(r=>`
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div>
+                  <strong>${r.code}</strong><br>
+                  <span class="text-muted-2">${r.in} → ${r.out}</span>
+                </div>
+                <span class="badge bg-secondary">${r.status}</span>
+              </div>
+            `).join('')}
+          </div>
+        ` : `<p class="text-muted-2 small">Aucune réservation à venir</p>`}
+      `;
+      new bootstrap.Offcanvas('#roomCanvas').show();
+    }
+
+    window.updateHousekeepingStatus = function(id, st){
+      const r = AppState.rooms.find(x=>x.id===id);
+      if(r){
+        r.hk = st;
+        AppState.saveToLocalStorage();
+        renderRoomsGrid();
+        renderHousekeepingBoard();
+        showToast(`Statut ménage mis à jour pour la chambre ${r.number}`,'success');
+      }
+    }
+
+    window.toggleOutOfOrderStatus = function(id){
+      const r = AppState.rooms.find(x=>x.id===id);
+      if(r){
+        r.status = r.status==='ooo' ? 'free' : 'ooo';
+        AppState.saveToLocalStorage();
+        renderRoomsGrid();
+        renderHousekeepingBoard();
+        showToast(`Chambre ${r.number} ${r.status==='ooo'?'mise hors service':'réactivée'}`, r.status==='ooo'?'warning':'success');
+      }
+    }
+
+    window.prefillReservationType = function(typeId){
+      document.getElementById('resType').value = typeId;
+    }
+
+    // ===================== RÉSERVATIONS =====================
+    function renderReservationsTable(){
+      if(!AppState.reservations.length){
+        reservTable.innerHTML = `
+          <tr>
+            <td colspan="6" class="text-center py-4 text-muted-2">
+              <i class="bi bi-calendar-x display-4"></i>
+              <div class="mt-2">Aucune réservation</div>
+            </td>
+          </tr>`;
+        updateTabBadges();
+        return;
+      }
+
+      reservTable.innerHTML = AppState.reservations.map(r=>`
+        <tr>
+          <td><strong>${r.code}</strong></td>
+          <td>${r.guest}</td>
+          <td>Ch. ${r.room}</td>
+          <td>${r.in}</td>
+          <td>${r.out}</td>
+          <td><span class="badge ${getReservationStatusBadge(r.status)}">${getReservationStatusText(r.status)}</span></td>
+        </tr>`).join('');
+      updateTabBadges();
+    }
+
+    function getReservationStatusBadge(s){
+      const m = {
+        confirmed:'bg-warning text-dark',
+        checked_in:'bg-success',
+        checked_out:'bg-secondary',
+        cancelled:'bg-danger'
+      };
+      return m[s] || 'bg-secondary';
+    }
+    function getReservationStatusText(s){
+      const m = {
+        confirmed:'Confirmée',
+        checked_in:'En cours',
+        checked_out:'Terminée',
+        cancelled:'Annulée'
+      };
+      return m[s] || s;
+    }
+
+    document.getElementById('btnCreateRes').addEventListener('click', ()=>{
+      const form = document.getElementById('newResForm');
+      if(!form.checkValidity()){
+        form.classList.add('was-validated');
+        showToast('Veuillez remplir tous les champs obligatoires','error');
+        return;
+      }
+      const roomTypeId = document.getElementById('resType').value;
+      const checkIn    = document.getElementById('resIn').value;
+      const checkOut   = document.getElementById('resOut').value;
+      const guestName  = document.getElementById('resGuest').value.trim();
+      const contact    = document.getElementById('resContact').value.trim();
+      const notes      = document.getElementById('resNotes').value.trim();
+
+      if(new Date(checkOut) <= new Date(checkIn)){
+        showToast('La date de départ doit être après la date d\'arrivée','error');
+        return;
+      }
+
+      const availableRoom = AppState.rooms.find(r =>
+        r.typeId.toString()===roomTypeId && r.status==='free' && r.hk==='clean'
+      );
+      if(!availableRoom){
+        showToast('Aucune chambre disponible pour ce type et cette période','error');
+        return;
+      }
+
+      const code = 'CHE-' + new Date().getFullYear() + '-' + String(AppState.reservations.length+1).padStart(4,'0');
+      const newRes = { code, guest:guestName, room:availableRoom.number, in:checkIn, out:checkOut, contact, notes, status:'confirmed', createdAt:getCurrentDate() };
+
+      AppState.reservations.unshift(newRes);
+      availableRoom.status='reserved';
+
+      AppState.saveToLocalStorage();
+      renderRoomsGrid();
+      renderReservationsTable();
+
+      showToast(`Réservation ${code} créée pour la chambre ${availableRoom.number}`,'success');
+      bootstrap.Modal.getInstance('#newResModal').hide();
+      form.reset();
+      form.classList.remove('was-validated');
     });
 
-    // ========================= Écouteurs =========================
-    document.getElementById('btnRefresh').addEventListener('click', ()=>{ renderRooms(); showToast('Actualisé.'); });
-    filterType.addEventListener('change', renderRooms);
-    filterStatus.addEventListener('change', renderRooms);
-    searchRoom.addEventListener('input', renderRooms);
+    // ===================== MÉNAGE (KANBAN) =====================
+    function renderHousekeepingBoard(){
+      Object.values(HK_COLUMNS).forEach(c=>c.innerHTML='');
+      AppState.rooms.forEach(room=>{
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        li.innerHTML = `
+          <div>
+            <strong>Ch. ${room.number}</strong>
+            <div class="small text-muted-2">${getRoomTypeName(room.typeId)}</div>
+          </div>
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-outline-light" onclick="updateHousekeepingStatus(${room.id}, 'dirty')" title="Marquer comme sale"><i class="bi bi-trash"></i></button>
+            <button class="btn btn-outline-light" onclick="updateHousekeepingStatus(${room.id}, 'inspected')" title="Marquer comme inspectée"><i class="bi bi-search"></i></button>
+            <button class="btn btn-outline-light" onclick="updateHousekeepingStatus(${room.id}, 'clean')" title="Marquer comme propre"><i class="bi bi-check2"></i></button>
+          </div>`;
+        if(room.hk==='dirty') HK_COLUMNS.dirty.appendChild(li);
+        else if(room.hk==='inspected') HK_COLUMNS.inspected.appendChild(li);
+        else if(room.hk==='clean') HK_COLUMNS.clean.appendChild(li);
+        else HK_COLUMNS.progress.appendChild(li);
+      });
+      updateTabBadges();
+    }
 
-    // ========================= Init =========================
-    populateTypeFilters();
-    renderRooms();
-    renderReserv();
-    renderHkBoard();
-    renderTickets();
+    // ===================== MAINTENANCE =====================
+    function renderMaintenanceTickets(){
+      if(!AppState.tickets.length){
+        ticketsList.innerHTML = `
+          <div class="col-12 text-center py-4">
+            <i class="bi bi-check-circle display-1 text-muted-2"></i>
+            <h5 class="mt-3 text-muted-2">Aucun ticket de maintenance</h5>
+            <p class="text-muted-2">Tous les équipements fonctionnent correctement.</p>
+          </div>`;
+        updateTabBadges();
+        return;
+      }
 
-    // Valeurs par défaut dans modal réservation
-    document.getElementById('resIn').value = today();
-    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
-    document.getElementById('resOut').value = tomorrow.toISOString().slice(0,10);
+      ticketsList.innerHTML = AppState.tickets.map(t=>`
+        <div class="col-md-6 col-lg-4">
+          <div class="card card-dark h-100">
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <div class="small text-muted-2">Ch. ${t.room}</div>
+                  <h6 class="card-title mb-1">${t.title}</h6>
+                </div>
+                <span class="badge ${getTicketStatusBadge(t.status)}">${getTicketStatusText(t.status)}</span>
+              </div>
 
+              <div class="small text-muted-2 mb-3">
+                <i class="bi bi-calendar"></i> Créé le ${t.createdAt}
+              </div>
+
+              <div class="mt-auto">
+                ${t.status!=='closed' ? `
+                  <button class="btn btn-outline-light btn-sm w-100" onclick="advanceTicketStatus(${t.id})">
+                    <i class="bi bi-arrow-right"></i> ${t.status==='open'?'Commencer':'Terminer'}
+                  </button>
+                ` : `
+                  <button class="btn btn-outline-secondary btn-sm w-100" disabled>
+                    <i class="bi bi-check2"></i> Résolu
+                  </button>
+                `}
+              </div>
+            </div>
+          </div>
+        </div>`).join('');
+      updateTabBadges();
+    }
+    function getTicketStatusBadge(s){ const m = { open:'bg-danger', in_progress:'bg-warning text-dark', closed:'bg-success' }; return m[s] || 'bg-secondary'; }
+    function getTicketStatusText(s){ const m = { open:'Ouvert', in_progress:'En cours', closed:'Fermé' }; return m[s] || s; }
+    window.advanceTicketStatus = function(id){
+      const t = AppState.tickets.find(x=>x.id===id);
+      if(t){
+        t.status = t.status==='open' ? 'in_progress' : 'closed';
+        AppState.saveToLocalStorage();
+        renderMaintenanceTickets();
+        showToast('Statut du ticket mis à jour','success');
+      }
+    }
+    document.getElementById('btnNewTicket').addEventListener('click', ()=>{
+      const id = Math.max(0,...AppState.tickets.map(t=>t.id))+1;
+      const rooms=['101','204','302','405'];
+      const probs=['Fuite robinet','TV ne fonctionne pas','Problème Wi-Fi','Lampe défectueuse','Rideau cassé'];
+      const newT = {
+        id, room:rooms[Math.floor(Math.random()*rooms.length)],
+        title:probs[Math.floor(Math.random()*probs.length)],
+        status:'open', createdAt:getCurrentDate()
+      };
+      AppState.tickets.unshift(newT);
+      AppState.saveToLocalStorage();
+      renderMaintenanceTickets();
+      showToast('Nouveau ticket créé','success');
+    });
+
+    // ===================== INIT =====================
+    function initializeApplication(){
+      AppState.loadFromLocalStorage();
+      populateRoomTypeFilters();
+      renderRoomsGrid();
+      renderReservationsTable();
+      renderHousekeepingBoard();
+      renderMaintenanceTickets();
+
+      document.getElementById('btnRefresh').addEventListener('click', ()=>{
+        renderRoomsGrid();
+        showToast('Interface actualisée','info');
+      });
+      document.getElementById('btnRefreshHeader').addEventListener('click', ()=>{
+        renderRoomsGrid();
+        renderReservationsTable();
+        renderHousekeepingBoard();
+        renderMaintenanceTickets();
+        showToast('Tableaux actualisés','info');
+      });
+
+      filterType.addEventListener('change', renderRoomsGrid);
+      filterStatus.addEventListener('change', renderRoomsGrid);
+      searchRoom.addEventListener('input', debounce(renderRoomsGrid, 300));
+
+      const today = getCurrentDate();
+      const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+      document.getElementById('resIn').value = today;
+      document.getElementById('resOut').value = tomorrow.toISOString().split('T')[0];
+      document.getElementById('resIn').min = today;
+
+      updateTabBadges();
+      showToast('Système de gestion hôtelière chargé','success');
+    }
+    document.addEventListener('DOMContentLoaded', initializeApplication);
   </script>
 </body>
 </html>
